@@ -1,0 +1,14 @@
+.Header {
+    height: 12vh;
+    background-color: orange;
+    display: flex;
+    flex-direction: row;
+    color: white;
+}
+
+h1 {
+    margin: 0px;
+    position: relative;
+    top: 25%;
+    padding-left: 15px;
+}
