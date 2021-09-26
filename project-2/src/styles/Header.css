@@ -5,6 +5,10 @@
     flex-direction: row;
 }
 
+.header.blue {
+    background-color: rgb(73, 158, 255);
+}
+
 .header-text {
     font-size: 2.5em;
     margin: 0 0 0.25em 0;
