@@ -3,7 +3,6 @@
     background-color: orange;
     display: flex;
     flex-direction: row;
-    color: white;
 }
 
 h1 {
@@ -11,4 +10,5 @@ h1 {
     position: relative;
     top: 25%;
     padding-left: 15px;
+    color:white;
 }
