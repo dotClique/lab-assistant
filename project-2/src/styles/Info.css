@@ -1,0 +1,13 @@
+h3 {
+    padding-left: 10px;
+    padding-top: 7px;
+    color: rgb(107, 107, 107);
+}
+
+.info-section {
+    background-color: rgb(223, 222, 222);
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    flex-direction: row;
+}
