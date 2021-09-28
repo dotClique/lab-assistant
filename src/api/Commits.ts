@@ -21,6 +21,7 @@ export async function getCommits(accessToken: string, projectId: string): Promis
     try {
         return (await Axios.get<Commit[]>(`/repository/commits`, axiosConfig(accessToken, projectId))).data;
     } catch (e) {
+        console.error("Failed to retrieve commits", e);
         return [];
     }
 }

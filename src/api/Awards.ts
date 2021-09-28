@@ -27,6 +27,7 @@ export async function getAwards(accessToken: string, projectId: string): Promise
                 axiosConfig(accessToken, projectId))
         ).data;
     } catch (e) {
-        return []
+        console.error("Failed to retrieve awards", e);
+        return [];
     }
 }

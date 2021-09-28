@@ -52,7 +52,7 @@ export async function getIssues(accessToken: string, projectId: string): Promise
         return (await Axios.get<Issue[]>("/issues", axiosConfig(accessToken, projectId))).data;
 
     } catch (e) {
-        console.error("Failed to retreive issues", e);
+        console.error("Failed to retrieve issues", e);
         return [];
     }
 }

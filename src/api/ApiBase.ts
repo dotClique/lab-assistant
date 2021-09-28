@@ -18,6 +18,7 @@ export async function isAuthorized(accessToken: string, projectId: string): Prom
             await Axios.get(`/`, axiosConfig(accessToken, projectId))
         ).data;
     } catch (e) {
+        console.log("Failed to authorize", e)
         return false
     }
 }
