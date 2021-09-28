@@ -11,3 +11,9 @@ h3 {
     padding: 10px;
     flex-direction: row;
 }
+
+.info-icon {
+    font-size: 30px;
+    float: left;
+    color: rgb(107, 107, 107);
+}

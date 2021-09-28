@@ -1,11 +1,14 @@
-import logo from "../gitlab-logo.png";
+import logo from "../gitlab-logo-w.png";
+import React, {useContext} from "react";
 import "../styles/Header.css";
+import {ThemeContext} from "../App"
 
 function Header() {
-    return(
-        <div className="Header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <h1 id="title">Gitlab-repo Information</h1>
+    const theme = useContext(ThemeContext)
+    return (
+        <div className={"header" + (theme.theme === "blue" ? " blue" : "")}>
+            <img src={logo} className="App-logo" alt="logo" onClick={theme.toggleTheme}/>
+            <h1 className="header-text">Lab Assistant</h1>
         </div>
     );
 }

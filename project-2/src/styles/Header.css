@@ -1,14 +1,18 @@
-.Header {
-    height: 12vh;
-    background-color: orange;
+.header {
+    height: 10em;
+    background-color: rgb(255, 127, 73);
     display: flex;
     flex-direction: row;
 }
 
-h1 {
-    margin: 0px;
-    position: relative;
-    top: 25%;
+.header.blue {
+    background-color: rgb(73, 158, 255);
+}
+
+.header-text {
+    font-size: 2.5em;
+    margin: 0 0 0.25em 0;
     padding-left: 15px;
     color:white;
+    align-self: center;
 }
