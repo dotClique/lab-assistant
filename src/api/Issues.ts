@@ -1,7 +1,6 @@
 import Axios from "axios";
 import {axiosConfig} from "./ApiBase";
-import {NamesContextType} from "../App";
-import {anonymize, User} from "./Users";
+import {User} from "./Users";
 
 interface TimeStats {
     time_estimate: number,
@@ -24,7 +23,7 @@ export interface Issue {
     labels: string[],
     milestone: string,
     assignees: (User | null)[],
-    author: User | null,
+    author: User,
     type: string,
     assignee: User | null,
     user_notes_count: number,
@@ -48,20 +47,10 @@ export interface Issue {
     // service_desk_reply_to: any,
 }
 
-function anonymizeIssue(context: NamesContextType, issue: Issue): Issue {
-    return {
-        ...issue,
-        author: anonymize(context, issue.author),
-        assignee: anonymize(context, issue.assignee),
-        closed_by: anonymize(context, issue.closed_by),
-        assignees: issue.assignees.map(user => anonymize(context, user)),
-    }
-}
-
-export async function getIssues(namesContext: Promise<NamesContextType>): Promise<Issue[]> {
+export async function getIssues(): Promise<Issue[]> {
     try {
-        const [names, issues] = await Promise.all([namesContext, Axios.get<Issue[]>("/issues", axiosConfig)]);
-        return issues.data.map(user => anonymizeIssue(names, user));
+        return (await Axios.get<Issue[]>("/issues", axiosConfig)).data;
+
     } catch (e) {
         console.error("Failed to retreive issues", e);
         return [];

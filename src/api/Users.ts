@@ -17,11 +17,6 @@ export async function getNames() {
     }
 }
 
-export function anonymize({nouns, adjectives}: NamesContextType, user: User | null): User | null {
-    return user === null
-        ? user
-        : {
-            ...user,
-            name: adjectives[user.id % adjectives.length] + " " + nouns[user.id % nouns.length]
-        };
+export function anonymize({nouns, adjectives}: NamesContextType, userId: number): string {
+    return adjectives[userId % adjectives.length] + " " + nouns[userId % nouns.length]
 }

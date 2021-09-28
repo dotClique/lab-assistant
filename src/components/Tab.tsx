@@ -5,6 +5,7 @@ import {Commit, getCommits} from "../api/Commits";
 import {Award, getAwards} from "../api/Awards";
 import {getIssues, Issue} from "../api/Issues";
 import {NamesContext} from "../App";
+import {anonymize} from "../api/Users";
 
 const {TabPane} = Tabs;
 
@@ -20,12 +21,12 @@ function Tab() {
         awards: [],
         issues: []
     });
-    const namesContext = useContext(NamesContext);
+    const names = useContext(NamesContext);
     useEffect(() => {
         getCommits().then(commits => setState(prev => ({...prev, commits: commits})));
         getAwards().then(awards => setState(prev => ({...prev, awards: awards})));
-        getIssues(namesContext).then(issues => setState(prev => ({...prev, issues: issues})));
-    }, [namesContext])
+        getIssues().then(issues => setState(prev => ({...prev, issues: issues})));
+    }, [names])
 
     return (
         <div className="card-container">
@@ -39,7 +40,7 @@ function Tab() {
                                 <ul>
                                     <li key={1}>Closed: {i.closed_at === null ? "❌" : "✔"}</li>
                                     <li key={2}>Time spent: {Math.round(i.time_stats.total_time_spent / 3600)}h</li>
-                                    <li key={3}>Author: {i.author?.name ?? "unknown"}</li>
+                                    <li key={3}>Author: {anonymize(names, i.author.id)}</li>
                                     <li key={4}>Upvotes: {i.upvotes}</li>
                                 </ul>
                             </li>
