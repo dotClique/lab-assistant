@@ -1,8 +1,10 @@
 import React from "react";
-import {Alert, Button, Form, Input} from "antd";
+import {Alert, Button, Form, Input, Typography} from "antd";
 import {AuthContext, AuthContextType} from "../App";
 import {isAuthorized} from "../api/ApiBase";
 import '../styles/AuthForm.css';
+
+const {Paragraph, Text} = Typography;
 
 interface TokenInputState {
     inputAccessToken: string,
@@ -29,7 +31,7 @@ export default class AuthForm extends React.Component<{}, TokenInputState> {
             auth.setAccessToken(input.accessToken)
             auth.setProjectId(input.projectId)
             auth.setAuthenticated(true)
-        }else{
+        } else {
             this.setState({authFailed: true})
         }
     }
@@ -44,6 +46,20 @@ export default class AuthForm extends React.Component<{}, TokenInputState> {
             <AuthContext.Consumer>
                 {auth => (
                     <>
+                        <Alert className={"authFormInfo"} type="info" message="Welcome!"
+                               description={
+                                   <Text>
+                                       <Paragraph>
+                                           In order to display some cool insights into your project, we need valid
+                                           credentials for accessing your GitLab project.
+                                       </Paragraph>
+                                       <Paragraph>
+                                           Your project ID is displayed right under your project name on GitLab, and an access token can
+                                           be generated from GitLab at <Text code>Settings &gt; Access Tokens</Text>
+                                       </Paragraph>
+                                   </Text>
+                               }
+                               showIcon/>
                         <Form
                             onFinish={(input) => this.submitInput(auth, input)}
                             onFinishFailed={this.onFinishFailed}
@@ -52,17 +68,17 @@ export default class AuthForm extends React.Component<{}, TokenInputState> {
                             <Form.Item
                                 label="Project ID"
                                 name="projectId"
-                                rules={[{ required: true, message: 'Please input the project ID!' }]}
+                                rules={[{required: true, message: 'Please input the project ID!'}]}
                             >
-                                <Input />
+                                <Input/>
                             </Form.Item>
 
                             <Form.Item
                                 label="Access Token"
                                 name="accessToken"
-                                rules={[{ required: true, message: 'Please input your access token!' }]}
+                                rules={[{required: true, message: 'Please input your access token!'}]}
                             >
-                                <Input />
+                                <Input/>
                             </Form.Item>
 
                             <Form.Item>
