@@ -17,6 +17,10 @@ export interface Commit {
     web_url: string
 }
 
-export async function getCommits(): Promise<Commit[]> {
-    return (await Axios.get<Commit[]>(`/repository/commits`, axiosConfig)).data;
+export async function getCommits(accessToken: string, projectId: string): Promise<Commit[]> {
+    try {
+        return (await Axios.get<Commit[]>(`/repository/commits`, axiosConfig(accessToken, projectId))).data;
+    } catch (e) {
+        return [];
+    }
 }

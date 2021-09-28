@@ -4,7 +4,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {Commit, getCommits} from "../api/Commits";
 import {Award, getAwards} from "../api/Awards";
 import {getIssues, Issue} from "../api/Issues";
-import {NamesContext} from "../App";
+import {AuthContext, NamesContext} from "../App";
 import {anonymize} from "../api/Users";
 
 const {TabPane} = Tabs;
@@ -16,6 +16,8 @@ interface TabsState {
 }
 
 function Tab() {
+  
+    const auth = useContext(AuthContext);
     const [{commits, awards, issues}, setState] = useState<TabsState>({
         commits: [],
         awards: [],
@@ -23,10 +25,10 @@ function Tab() {
     });
     const names = useContext(NamesContext);
     useEffect(() => {
-        getCommits().then(commits => setState(prev => ({...prev, commits: commits})));
-        getAwards().then(awards => setState(prev => ({...prev, awards: awards})));
-        getIssues().then(issues => setState(prev => ({...prev, issues: issues})));
-    }, [names])
+        getCommits(auth.accessToken, auth.projectId).then(commits => setState(prev => ({...prev, commits: commits})));
+        getAwards(auth.accessToken, auth.projectId).then(awards => setState(prev => ({...prev, awards: awards})));
+        getIssues(auth.accessToken, auth.projectId).then(issues => setState(prev => ({...prev, issues: issues})));
+    }, [auth, names])
 
     return (
         <div className="card-container">

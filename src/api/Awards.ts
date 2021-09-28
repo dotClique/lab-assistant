@@ -18,8 +18,15 @@ export interface Award {
     "awardable_type": string
 }
 
-export async function getAwards(): Promise<Award[]> {
+export async function getAwards(accessToken: string, projectId: string): Promise<Award[]> {
     const issueId = "5";
     const noteId = "413065";
-    return (await Axios.get<Award[]>(`/issues/${issueId}/notes/${noteId}/award_emoji`, axiosConfig)).data;
+    try {
+        return (
+            await Axios.get<Award[]>(`/issues/${issueId}/notes/${noteId}/award_emoji`,
+                axiosConfig(accessToken, projectId))
+        ).data;
+    } catch (e) {
+        return []
+    }
 }

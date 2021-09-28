@@ -1,0 +1,11 @@
+.authFormContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 2em;
+}
+
+.authForm {
+    max-width: 500px;
+}

@@ -1,12 +1,23 @@
-import {AxiosRequestConfig} from "axios";
+import Axios, {AxiosRequestConfig} from "axios";
 
 const gitlabInstanceUrl = "https://gitlab.stud.idi.ntnu.no";
 const apiVersion = "v4"
-const projectId = encodeURIComponent("it2810-h21/team-25/project-2");
 
-export const axiosConfig: AxiosRequestConfig = {
-    headers: {
-        "PRIVATE-TOKEN": "ZTziure4DK-wh_Z8Fmwq",
-    },
-    baseURL: `${gitlabInstanceUrl}/api/${apiVersion}/projects/${projectId}`,
+export const axiosConfig = (token: string, projectId: string): AxiosRequestConfig => {
+    return {
+        headers: {
+            "PRIVATE-TOKEN": token,
+        },
+        baseURL: `${gitlabInstanceUrl}/api/${apiVersion}/projects/${projectId}`
+    }
 };
+
+export async function isAuthorized(accessToken: string, projectId: string): Promise<boolean> {
+    try {
+        return (
+            await Axios.get(`/`, axiosConfig(accessToken, projectId))
+        ).data;
+    } catch (e) {
+        return false
+    }
+}
