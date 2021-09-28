@@ -1,12 +1,10 @@
 import "../styles/Info.css";
-import {InfoCircleOutlined} from '@ant-design/icons';
+import {Alert} from "antd";
 
 function Info() {
-    return(
-        <div className={"info-section"}>
-            <InfoCircleOutlined className={"info-icon"}/>
-            <h3>Click on the different tabs to view various data from the repository.</h3>
-        </div>
+    return (
+        <Alert type="info" message="Welcome!"
+               description="Click on the different tabs to view various data from the repository" showIcon closable/>
     );
 }
 

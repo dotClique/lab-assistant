@@ -32,7 +32,7 @@ function Tab() {
 
     return (
         <div className="card-container">
-            <Tabs type="card">
+            <Tabs>
                 <TabPane tab="Issues" key="1">
                     <p>Here you can see issues for the project</p>
                     <ul>
