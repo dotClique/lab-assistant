@@ -4,8 +4,9 @@ import Tab from './components/Tab';
 import Info from './components/Info';
 import Page from "./components/Page";
 import {getNames} from "./api/Users";
-import AuthForm from "./components/AuthForm";
+import {getEmoji} from "./api/Awards";
 import './App.css';
+import AuthForm from "./components/AuthForm";
 
 
 export const AuthContext = React.createContext({
@@ -35,32 +36,46 @@ export const ThemeContext = React.createContext<{ theme: string, toggleTheme: ()
     }
 })
 
-export const NamesContext = React.createContext<NamesContextType>({nouns: ["unknown"], adjectives: [""]});
-
-export interface NamesContextType {
-    nouns: string[],
-    adjectives: string[],
+export interface AssetsContextType {
+    names: {
+        nouns: string[],
+        adjectives: string[],
+    },
+    emoji: {
+        [name: string]: string,
+    }
 }
 
+export const AssetsContext = React.createContext<AssetsContextType>({
+    names: {nouns: ["unknown"], adjectives: [""]},
+    emoji: {}
+});
+
 function App() {
-    const [{authenticated, accessToken, projectId, theme, names}, setState] = useState<{
+    const [{authenticated, accessToken, projectId, theme, assets}, setState] = useState<{
         authenticated: boolean,
         accessToken: string,
         projectId: string,
         theme: string,
-        names: NamesContextType
+        assets: AssetsContextType,
     }>({
         authenticated: false,
         accessToken: "",
         projectId: "",
         theme: "orange",
-        names: {nouns: ["unknown"], adjectives: [""]}
+        assets: {
+            names: {
+                nouns: ["unknown"], adjectives: [""]
+            },
+            emoji: {},
+        }
     });
     const toggleTheme = () => {
         setState(prev => ({...prev, theme: theme === "orange" ? "blue" : "orange"}))
     }
     useEffect(() => {
-        getNames().then(names => setState(prev => ({...prev, names: names})))
+        getNames().then(names => setState(prev => ({...prev, assets: {...prev.assets, names: names}})))
+        getEmoji().then(emoji => setState(prev => ({...prev, assets: {...prev.assets, emoji: emoji}})))
     }, []);
 
     const authContextProviderValue: AuthContextType = {
@@ -85,10 +100,10 @@ function App() {
                                 </div>
                             </div>
                         ) : (
-                            <NamesContext.Provider value={names}>
+                            <AssetsContext.Provider value={assets}>
                                 <Info/>
                                 <Tab/>
-                            </NamesContext.Provider>
+                            </AssetsContext.Provider>
                         )
                     }
                 </Page>

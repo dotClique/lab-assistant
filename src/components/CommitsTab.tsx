@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import {AuthContext, NamesContext, ThemeContext} from "../App";
+import {AuthContext, AssetsContext, ThemeContext} from "../App";
 import {Commit, getCommits} from "../api/Commits";
 import {List} from "antd";
 import {Line} from "react-chartjs-2";
@@ -15,7 +15,7 @@ export default function CommitsTab() {
         datesTally: []
     });
 
-    const names = useContext(NamesContext);
+    const assets = useContext(AssetsContext);
 
     const getDatesBetweenDates = (startDate: Date, endDate: Date) => {
         let dates: Date[] = []
@@ -41,7 +41,7 @@ export default function CommitsTab() {
             }
             setState(prev => ({...prev, commits: commits, dates: activeDates, datesTally: datesTally}));
         });
-    }, [auth, names])
+    }, [auth])
 
     const {theme} = useContext(ThemeContext)
 
@@ -57,7 +57,7 @@ export default function CommitsTab() {
                         <List.Item>
                             <List.Item.Meta
                                 title={item.title}
-                                description={anonymizeString(names, item.author_email)}
+                                description={anonymizeString(assets.names, item.author_email)}
                             />
                         </List.Item>
                     )}

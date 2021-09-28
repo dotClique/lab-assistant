@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import {AuthContext, NamesContext, ThemeContext} from "../App";
+import {AuthContext, AssetsContext, ThemeContext} from "../App";
 import {getIssues, Issue} from "../api/Issues";
 import {Card, Tag} from "antd";
 import {anonymize} from "../api/Users";
@@ -22,7 +22,7 @@ export default function IssuesTab() {
         weekdayClosedTally: []
     });
 
-    const names = useContext(NamesContext);
+    const assets = useContext(AssetsContext);
 
     const weekdayFromISODateString = (isoString: string) => {
         // Strip ISO string to only include date, and adjust week to start on monday
@@ -44,7 +44,7 @@ export default function IssuesTab() {
                 issues: issues, weekdayCreatedTally: weekdayCreatedTally, weekdayClosedTally: weekdayClosedTally
             }));
         });
-    }, [auth, names])
+    }, [auth])
 
     const {theme} = useContext(ThemeContext)
 
@@ -74,7 +74,7 @@ export default function IssuesTab() {
                             bordered={true}
                         >
                             <p><strong>Time spent:</strong> {Math.round(i.time_stats.total_time_spent / 3600)}h</p>
-                            <p><strong>Author:</strong> {anonymize(names, i.author.id)}</p>
+                            <p><strong>Author:</strong> {anonymize(assets.names, i.author.id)}</p>
                             <p><strong>Upvotes:</strong> {i.upvotes}</p>
                         </Card>
                         <br/>

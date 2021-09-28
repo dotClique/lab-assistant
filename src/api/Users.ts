@@ -1,5 +1,5 @@
 import Axios from "axios";
-import {NamesContextType} from "../App";
+import {AssetsContextType} from "../App";
 
 export interface User {
     id: number,
@@ -17,11 +17,11 @@ export async function getNames() {
     }
 }
 
-export function anonymize({nouns, adjectives}: NamesContextType, userId: number): string {
+export function anonymize({nouns, adjectives}: {nouns: string[], adjectives: string[]}, userId: number): string {
     return adjectives[userId % adjectives.length] + " " + nouns[userId % nouns.length]
 }
 
-export function anonymizeString({nouns, adjectives}: NamesContextType, str: string): string {
+export function anonymizeString({nouns, adjectives}: AssetsContextType["names"], str: string): string {
     const hashCode = Math.abs(str.split('').reduce((a,b) => (((a << 5) - a) + b.charCodeAt(0))|0, 0)) % 10000
     return adjectives[hashCode % adjectives.length] + " " + nouns[hashCode % nouns.length]
 }
