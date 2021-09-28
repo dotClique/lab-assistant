@@ -8,7 +8,7 @@ export const axiosConfig = (token: string, projectId: string): AxiosRequestConfi
         headers: {
             "PRIVATE-TOKEN": token,
         },
-        baseURL: `${gitlabInstanceUrl}/api/${apiVersion}/projects/${projectId}`
+        baseURL: `${gitlabInstanceUrl}/api/${apiVersion}/projects/${encodeURIComponent(projectId)}`
     }
 };
 

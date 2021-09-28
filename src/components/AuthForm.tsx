@@ -54,8 +54,11 @@ export default class AuthForm extends React.Component<{}, TokenInputState> {
                                            credentials for accessing your GitLab project.
                                        </Paragraph>
                                        <Paragraph>
-                                           Your project ID is displayed right under your project name on GitLab, and an access token can
-                                           be generated from GitLab at <Text code>Settings &gt; Access Tokens</Text>
+                                           Your project identification can either be the number displayed right under your project name on GitLab,
+                                           or the project path visible in the URL (the part after <Text code>https://gitlab.stud.idi.ntnu.no/</Text>)
+                                       </Paragraph>
+                                       <Paragraph>
+                                           An access token can be generated from GitLab at <Text code>Settings &gt; Access Tokens</Text>
                                        </Paragraph>
                                    </Text>
                                }
@@ -66,11 +69,11 @@ export default class AuthForm extends React.Component<{}, TokenInputState> {
                             layout={"vertical"}
                         >
                             <Form.Item
-                                label="Project ID"
+                                label="Project Identification"
                                 name="projectId"
-                                rules={[{required: true, message: 'Please input the project ID!'}]}
+                                rules={[{required: true, message: 'Please input the project identification!'}]}
                             >
-                                <Input/>
+                                <Input placeholder={"e.g. '12345' or 'it2810-h21/team-321/project-2'"}/>
                             </Form.Item>
 
                             <Form.Item
@@ -78,7 +81,7 @@ export default class AuthForm extends React.Component<{}, TokenInputState> {
                                 name="accessToken"
                                 rules={[{required: true, message: 'Please input your access token!'}]}
                             >
-                                <Input/>
+                                <Input placeholder={"e.g. 'f3bba1Qw7MjrbvwxLGUn'"}/>
                             </Form.Item>
 
                             <Form.Item>
