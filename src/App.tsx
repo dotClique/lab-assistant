@@ -63,56 +63,35 @@ function App() {
         getNames().then(names => setState(prev => ({...prev, names: names})))
     }, []);
 
+    const authContextProviderValue: AuthContextType = {
+        authenticated: authenticated,
+        setAuthenticated: authenticated => setState(prevState => ({...prevState, authenticated: authenticated})),
+        accessToken: accessToken,
+        setAccessToken: accessToken => setState(prevState => ({...prevState, accessToken: accessToken})),
+        projectId: projectId,
+        setProjectId: projectId => setState(prevState => ({...prevState, projectId: projectId})),
+    }
+
     return (
-        <AuthContext.Provider value={
-            {
-                authenticated: authenticated,
-                setAuthenticated: (authenticated) => {
-                    setState(prevState => (
-                        {
-                            ...prevState,
-                            authenticated: authenticated
-                        }
-                    ))
-                },
-                accessToken: accessToken,
-                setAccessToken: (accessToken) => {
-                    setState(prevState => (
-                        {
-                            ...prevState,
-                            accessToken: accessToken
-                        }
-                    ))
-                },
-                projectId: projectId,
-                setProjectId: (projectId) => {
-                    setState(prevState => (
-                        {
-                            ...prevState,
-                            projectId: projectId
-                        }
-                    ))
-                },
-            }
-        }>
+        <AuthContext.Provider value={authContextProviderValue}>
             <ThemeContext.Provider value={{theme: theme, toggleTheme: toggleTheme}}>
-                  <Page>
-                      <Header/>
-                      {!authenticated ?
-                          (
-                              <div className={"authFormContainer"}>
-                                  <div className={"authForm"}>
-                                      <AuthForm/>
-                                  </div>
-                              </div>
-                          ) : (
-                              <NamesContext.Provider value={names}>
-                                  <Info/>
-                                  <Tab/>
-                              </NamesContext.Provider>
-                          )
-                      }
-                  </Page>
+                <Page>
+                    <Header/>
+                    {!authenticated ?
+                        (
+                            <div className={"authFormContainer"}>
+                                <div className={"authForm"}>
+                                    <AuthForm/>
+                                </div>
+                            </div>
+                        ) : (
+                            <NamesContext.Provider value={names}>
+                                <Info/>
+                                <Tab/>
+                            </NamesContext.Provider>
+                        )
+                    }
+                </Page>
             </ThemeContext.Provider>
         </AuthContext.Provider>
     );
