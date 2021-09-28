@@ -47,12 +47,12 @@ export interface Issue {
     // service_desk_reply_to: any,
 }
 
-export async function getIssues(): Promise<Issue[]> {
+export async function getIssues(accessToken: string, projectId: string): Promise<Issue[]> {
     try {
-        return (await Axios.get<Issue[]>("/issues", axiosConfig)).data;
+        return (await Axios.get<Issue[]>("/issues", axiosConfig(accessToken, projectId))).data;
 
     } catch (e) {
-        console.error("Failed to retreive issues", e);
+        console.error("Failed to retrieve issues", e);
         return [];
     }
 }

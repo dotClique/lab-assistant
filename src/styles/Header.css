@@ -9,10 +9,14 @@
     background-color: rgb(73, 158, 255);
 }
 
-.header-text {
-    font-size: 2.5em;
+.header-text-container {
     margin: 0 0 0.25em 0;
     padding-left: 15px;
-    color:white;
     align-self: center;
+}
+
+.header-text {
+    margin: 0;
+    font-size: 2.5em;
+    color:white;
 }
