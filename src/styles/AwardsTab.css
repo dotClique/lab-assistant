@@ -1,0 +1,30 @@
+@media screen and (max-width: 1200px) {
+    .awards-list {
+        max-width: none !important;
+    }
+}
+@media screen and (max-width: 600px) {
+    .awards-list {
+        padding: 0 !important;
+    }
+}
+
+.awards-list {
+    width: 100%;
+    max-width: 600px;
+    min-width: 100px;
+    padding: 3em 2em;
+}
+
+.awards-list .ant-timeline-item-content {
+    font-size: 1.2em;
+    padding-bottom: 1.5em;
+}
+
+.awards-list.orange .ant-timeline-item-head {
+    border-color: #f50;
+}
+
+.awards-list.blue .ant-timeline-item-head {
+    border-color: #3F8CE4;
+}

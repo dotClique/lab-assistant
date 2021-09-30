@@ -1,0 +1,11 @@
+@media screen and (max-width: 1200px) {
+    .commits-list {
+        max-width: none !important;
+    }
+}
+
+.commits-list {
+    width: 100%;
+    max-width: 400px;
+    min-width: 100px;
+}

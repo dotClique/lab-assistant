@@ -1,0 +1,13 @@
+.issue-card-title {
+    margin-right: 0.75em;
+}
+
+.issue-closed-status-icon {
+    margin-right: 0.5em;
+    font-size: 1em;
+}
+
+.issues-chart-container {
+    margin-bottom: 2em;
+    position: sticky;
+}

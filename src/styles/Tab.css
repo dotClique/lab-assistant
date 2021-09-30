@@ -1,4 +1,25 @@
+.tab-content {
+    display: flex;
+    justify-content: space-evenly;
+}
 
+@media screen and (max-width: 1200px) {
+    .tab-content {
+        flex-direction: column-reverse;
+    }
+    .chart-container {
+        max-width: none !important;
+    }
+}
+
+.chart-container {
+    width: 100%;
+    max-width: 800px;
+    height: 70vh;
+    max-height: 600px;
+    margin-right: 1em;
+    margin-bottom: 2em;
+}
 
 .card-container p {
     margin: 0;
@@ -9,9 +30,25 @@
 }
 
 .card-container .ant-tabs-content-holder {
-    padding: 0.5em;
+    padding: 1em 0.5em;
 }
 
 .ant-tabs-tab {
     font-size: 1.4em;
+}
+
+.ant-tabs.orange .ant-tabs-tab-btn {
+    color: #f50;
+}
+
+.ant-tabs.orange .ant-tabs-ink-bar {
+    background: #f50;
+}
+
+.ant-tabs.blue .ant-tabs-tab-btn, .ant-tabs.blue .ant-tabs-ink-bar {
+    color: #3F8CE4;
+}
+
+.ant-tabs.blue .ant-tabs-ink-bar {
+    background: #3F8CE4;
 }
