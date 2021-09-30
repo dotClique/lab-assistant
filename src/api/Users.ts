@@ -20,3 +20,8 @@ export async function getNames() {
 export function anonymize({nouns, adjectives}: NamesContextType, userId: number): string {
     return adjectives[userId % adjectives.length] + " " + nouns[userId % nouns.length]
 }
+
+export function anonymizeString({nouns, adjectives}: NamesContextType, str: string): string {
+    const hashCode = Math.abs(str.split('').reduce((a,b) => (((a << 5) - a) + b.charCodeAt(0))|0, 0)) % 10000
+    return adjectives[hashCode % adjectives.length] + " " + nouns[hashCode % nouns.length]
+}
