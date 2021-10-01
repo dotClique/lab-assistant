@@ -80,7 +80,7 @@ function App() {
                     {!authenticated ?
                         (
                             <div className={"authFormContainer"}>
-                                <div className={"authForm"}>
+                                <div className={"auth-form"}>
                                     <AuthForm/>
                                 </div>
                             </div>

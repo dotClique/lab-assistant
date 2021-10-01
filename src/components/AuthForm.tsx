@@ -46,7 +46,7 @@ export default class AuthForm extends React.Component<{}, TokenInputState> {
             <AuthContext.Consumer>
                 {auth => (
                     <>
-                        <Alert className={"authFormInfo"} type="info" message="Welcome!"
+                        <Alert className={"auth-form-info"} type="info" message="Welcome!"
                                description={
                                    <Text>
                                        <Paragraph>
