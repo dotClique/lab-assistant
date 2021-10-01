@@ -52,7 +52,7 @@ export default function IssuesTab() {
         <div className={"tab-content"}>
             <div>
                 {issues.map(i =>
-                    <div>
+                    <div key={i.iid}>
                         <Card
                             title={
                                 <>
@@ -66,7 +66,7 @@ export default function IssuesTab() {
                                     <br/>
                                     {i.labels.length > 0 &&
                                     i.labels.map(l => (
-                                        <Tag>{l}</Tag>
+                                        <Tag key={l}>{l}</Tag>
                                     ))
                                     }
                                 </>
