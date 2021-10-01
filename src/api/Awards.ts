@@ -1,4 +1,5 @@
 import {axiosConfig, getAllPages} from "./ApiBase";
+import Axios from "axios";
 
 export interface Award {
     "id": number,
