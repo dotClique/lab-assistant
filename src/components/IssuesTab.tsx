@@ -7,25 +7,42 @@ import {CheckCircleTwoTone, ClockCircleTwoTone} from '@ant-design/icons';
 import {Radar} from "react-chartjs-2";
 import '../styles/IssuesTab.css'
 
+interface IssuesTabState {
+    issues: Issue[],
+    weekdayCreatedTally: number[],
+    weekdayClosedTally: number[]
+}
+
 export default function IssuesTab() {
 
     const auth = useContext(AuthContext);
-    const [{issues, weekdayTally}, setState] = useState<{ issues: Issue[], weekdayTally: number[] }>({
+    const [{issues, weekdayCreatedTally, weekdayClosedTally}, setState] = useState<IssuesTabState>({
         issues: [],
-        weekdayTally: []
+        weekdayCreatedTally: [],
+        weekdayClosedTally: []
     });
 
     const names = useContext(NamesContext);
+
+    const weekdayFromISODateString = (isoString: string) => {
+        // Strip ISO string to only include date, and adjust week to start on monday
+        return (new Date(Date.parse(isoString.slice(0,10))).getDay() - 1) % 7
+    }
+
     useEffect(() => {
         getIssues(auth.accessToken, auth.projectId).then(issues => {
-            // Count number of issues per weekday
-            const weekdayTally = [0,0,0,0,0,0,0]
-            for (const c of issues) {
-                const dateString = c.created_at.slice(0,10)  // ISO date string
-                const weekday = (new Date(Date.parse(dateString)).getDay() - 1) % 7
-                weekdayTally[weekday] += 1
+            // Count number of issues created and closed per weekday
+            const weekdayCreatedTally = new Array(7).fill(0)
+            const weekdayClosedTally = new Array(7).fill(0)
+            for (const i of issues) {
+                weekdayCreatedTally[weekdayFromISODateString(i.created_at)] += 1
+                if (i.closed_at !== null) {
+                    weekdayClosedTally[weekdayFromISODateString(i.closed_at)] += 1
+                }
             }
-            setState(prev => ({...prev, issues: issues, weekdayTally: weekdayTally}));
+            setState(prev => ({...prev,
+                issues: issues, weekdayCreatedTally: weekdayCreatedTally, weekdayClosedTally: weekdayClosedTally
+            }));
         });
     }, [auth, names])
 
@@ -70,11 +87,17 @@ export default function IssuesTab() {
                         labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
                         datasets: [
                             {
-                                label: 'issues',
-                                data: weekdayTally,
+                                label: 'created',
+                                data: weekdayCreatedTally,
                                 fill: true,
                                 backgroundColor: theme === "orange" ? 'rgba(255, 85, 0, 0.4)' : 'rgba(63, 140, 228, 0.4)',
                                 borderColor: theme === "orange" ? 'rgb(255, 85, 0)' : 'rgb(63, 140, 228)'
+                            }, {
+                                label: 'closed',
+                                data: weekdayClosedTally,
+                                fill: true,
+                                backgroundColor: 'rgba(135,208,104,0.4)',
+                                borderColor: 'rgb(135,208,104)'
                             },
                         ],
                     }}
@@ -82,9 +105,6 @@ export default function IssuesTab() {
                         {
                             maintainAspectRatio: false,
                             plugins: {
-                                legend: {
-                                    display: false
-                                },
                                 title: {
                                     display: true,
                                     text: 'Issues per weekday',
