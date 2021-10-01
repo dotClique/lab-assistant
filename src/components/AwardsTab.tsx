@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {Bar} from "react-chartjs-2";
 import {Timeline, Typography} from "antd";
 import {Award, getAwards} from "../api/Awards";
-import {AuthContext, NamesContext, ThemeContext} from "../App";
+import {AuthContext, AssetsContext, ThemeContext} from "../App";
 import '../styles/Tab.css'
 import '../styles/AwardsTab.css'
 import {anonymize} from "../api/Users";
@@ -14,7 +14,7 @@ interface AwardStatType {
     times_used : number
 }
 
-export default function AwardsTab() {
+export default function AwardsTab(): React.ReactElement {
 
     const auth = useContext(AuthContext);
 
@@ -23,7 +23,7 @@ export default function AwardsTab() {
         awardStats: []
     });
 
-    const names = useContext(NamesContext);
+    const assets = useContext(AssetsContext);
 
     useEffect(() => {
         getAwards(auth.accessToken, auth.projectId).then(awards => {
@@ -32,7 +32,7 @@ export default function AwardsTab() {
             const stats: AwardStatType[] = []
             awardsTally.forEach((times_used: number, award_name: string) => {
                 stats.push({
-                    "name": award_name,
+                    "name": assets.emoji[award_name] ?? award_name,
                     "times_used": times_used
                 })
             })
@@ -43,7 +43,7 @@ export default function AwardsTab() {
             const topFiveAwardStats = stats.slice(0,5)
             setState(prev => ({...prev, awards: awards, awardStats: topFiveAwardStats}));
         });
-    }, [auth])
+    }, [auth, assets.emoji])
 
     const data = {
         labels: awardStats.map(s => s.name),
@@ -77,8 +77,8 @@ export default function AwardsTab() {
                 <Timeline>
                     {awards.map(a =>
                         <Timeline.Item key={a.id}>
-                            <Text style={{color: theme === "orange" ? "rgb(255, 85, 0)" : "rgb(63, 140, 228)"}}>{anonymize(names, a.user.id)} </Text>
-                            reacted with <Text keyboard>{a.name}</Text> on {a.awardable_type} {a.awardable_id}
+                            <Text style={{color: theme === "orange" ? "rgb(255, 85, 0)" : "rgb(63, 140, 228)"}}>{anonymize(assets.names, a.user.id)} </Text>
+                            reacted with <Text keyboard>{assets.emoji[a.name] ?? a.name}</Text> on {a.awardable_type} {a.awardable_id}
                             <br/><Text type={"secondary"}>{a.created_at.slice(0,10)}</Text>
                         </Timeline.Item>
                     )}
@@ -94,6 +94,13 @@ export default function AwardsTab() {
                                 y: {
                                     ticks: {
                                         stepSize: 1
+                                    },
+                                },
+                                x: {
+                                    ticks: {
+                                        font: {
+                                            size: 40
+                                        }
                                     }
                                 }
                             },

@@ -31,3 +31,7 @@ export async function getAwards(accessToken: string, projectId: string): Promise
         return [];
     }
 }
+
+export async function getEmoji(): Promise<{ [id: string]: string }> {
+    return (await Axios.get<{ [id: string]: string }>("/emoji.json", {responseType: "json"})).data;
+}

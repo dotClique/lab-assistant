@@ -29,10 +29,4 @@ function Tab() {
     )
 }
 
-/*
-    Previous solutions without nice visualization:
-    <ul>{commits.map(c => <li key={c.id}>{c.title}</li>)}</ul>
-    <ul>{awards.map(a => <li key={a.id}>{a.name}</li>)}</ul>
-*/
-
 export default Tab;
