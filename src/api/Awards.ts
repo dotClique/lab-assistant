@@ -1,5 +1,4 @@
-import Axios from "axios";
-import {axiosConfig} from "./ApiBase";
+import {axiosConfig, getAllPages} from "./ApiBase";
 
 export interface Award {
     "id": number,
@@ -23,9 +22,10 @@ export async function getAwards(accessToken: string, projectId: string): Promise
     const noteId = "413065";
     try {
         return (
-            await Axios.get<Award[]>(`/issues/${issueId}/notes/${noteId}/award_emoji`,
-                axiosConfig(accessToken, projectId))
-        ).data;
+            await getAllPages<Award[]>(
+                `/issues/${issueId}/notes/${noteId}/award_emoji`,
+                axiosConfig(accessToken, projectId, 100))
+        ).map(page => page.data).flat();
     } catch (e) {
         console.error("Failed to retrieve awards", e);
         return [];
