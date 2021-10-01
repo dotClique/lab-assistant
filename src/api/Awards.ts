@@ -21,16 +21,12 @@ export interface Award {
 export async function getAwards(accessToken: string, projectId: string): Promise<Award[]> {
     const issueId = "5";
     const noteId = "413065";
-    try {
-        return (
-            await getAllPages<Award[]>(
-                `/issues/${issueId}/notes/${noteId}/award_emoji`,
-                axiosConfig(accessToken, projectId, 100))
-        ).map(page => page.data).flat();
-    } catch (e) {
-        console.error("Failed to retrieve awards", e);
-        return [];
-    }
+    return (
+        getAllPages<Award[]>(
+            `/issues/${issueId}/notes/${noteId}/award_emoji`,
+            axiosConfig(accessToken, projectId, 100)
+        )
+    ).then(res => res.map(page => page.data).flat())
 }
 
 export async function getEmoji(): Promise<{ [id: string]: string }> {

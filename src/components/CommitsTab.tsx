@@ -40,8 +40,8 @@ export default function CommitsTab() {
                 datesTally[activeDates.indexOf(i.created_at.slice(0,10))] += 1
             }
             setState(prev => ({...prev, commits: commits, dates: activeDates, datesTally: datesTally}));
-        });
-    }, [auth])
+        }).catch(() => auth.setAuthenticated(false))
+    }, [auth, assets])
 
     const {theme} = useContext(ThemeContext)
 

@@ -7,7 +7,16 @@ import {getNames} from "./api/Users";
 import {getEmoji} from "./api/Awards";
 import './App.css';
 import AuthForm from "./components/AuthForm";
-import { getLocalStorageTheme, setLocalStorageTheme } from './api/ApiBase';
+import {
+    getLocalTheme,
+    setLocalTheme,
+    clearSessionCredentials,
+    getSessionAccessToken,
+    getSessionProjectId,
+    sessionHasCredentials,
+    setSessionAccessToken,
+    setSessionProjectId
+} from "./api/ApiBase";
 
 
 export const AuthContext = React.createContext({
@@ -53,7 +62,10 @@ export const AssetsContext = React.createContext<AssetsContextType>({
 });
 
 function App() {
-    const localTheme = getLocalStorageTheme();
+    const localTheme = getLocalTheme();
+
+    const sessionProjectId = getSessionProjectId();
+    const sessionAccessToken = getSessionAccessToken();
 
     const [{authenticated, accessToken, projectId, theme, assets}, setState] = useState<{
         authenticated: boolean,
@@ -62,9 +74,9 @@ function App() {
         theme: string,
         assets: AssetsContextType,
     }>({
-        authenticated: false,
-        accessToken: "",
-        projectId: "",
+        authenticated: sessionHasCredentials(),
+        accessToken: sessionAccessToken != null ? sessionAccessToken : "",
+        projectId: sessionProjectId != null ? sessionProjectId : "",
         theme: localTheme ?? "orange",
         assets: {
             names: {
@@ -76,8 +88,9 @@ function App() {
     const toggleTheme = () => {
         const newTheme = theme === "orange" ? "blue" : "orange";
         setState(prev => ({...prev, theme: newTheme}))
-        setLocalStorageTheme(newTheme);
+        setLocalTheme(newTheme);
     }
+
     useEffect(() => {
         getNames().then(names => setState(prev => ({...prev, assets: {...prev.assets, names: names}})))
         getEmoji().then(emoji => setState(prev => ({...prev, assets: {...prev.assets, emoji: emoji}})))
@@ -85,11 +98,22 @@ function App() {
 
     const authContextProviderValue: AuthContextType = {
         authenticated: authenticated,
-        setAuthenticated: authenticated => setState(prevState => ({...prevState, authenticated: authenticated})),
+        setAuthenticated: authenticated => {
+            setState(prevState => ({...prevState, authenticated: authenticated}));
+            if (!authenticated) {
+                clearSessionCredentials()
+            }
+        },
         accessToken: accessToken,
-        setAccessToken: accessToken => setState(prevState => ({...prevState, accessToken: accessToken})),
+        setAccessToken: accessToken => {
+            setState(prevState => ({...prevState, accessToken: accessToken}))
+            setSessionAccessToken(accessToken)
+        },
         projectId: projectId,
-        setProjectId: projectId => setState(prevState => ({...prevState, projectId: projectId})),
+        setProjectId: projectId => {
+            setState(prevState => ({...prevState, projectId: projectId}))
+            setSessionProjectId(projectId)
+        },
     }
 
     return (

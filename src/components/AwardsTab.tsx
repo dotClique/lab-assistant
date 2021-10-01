@@ -42,7 +42,7 @@ export default function AwardsTab(): React.ReactElement {
             awards.sort((a: Award, b: Award) => Date.parse(b.created_at) - Date.parse(a.created_at))
             const topFiveAwardStats = stats.slice(0,5)
             setState(prev => ({...prev, awards: awards, awardStats: topFiveAwardStats}));
-        });
+        }).catch(() => auth.setAuthenticated(false))
     }, [auth, assets.emoji])
 
     const data = {

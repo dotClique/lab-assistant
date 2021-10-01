@@ -26,10 +26,12 @@ export default class AuthForm extends React.Component<{}, TokenInputState> {
     }
 
     async submitInput(auth: AuthContextType, input: {projectId: string, accessToken: string}) {
-        if (await isAuthorized(input.accessToken, input.projectId)) {
+        const projectId = input.projectId
+        const accessToken = input.accessToken
+        if (await isAuthorized(accessToken, projectId)) {
             this.setState({authFailed: false})
-            auth.setAccessToken(input.accessToken)
-            auth.setProjectId(input.projectId)
+            auth.setAccessToken(accessToken)
+            auth.setProjectId(projectId)
             auth.setAuthenticated(true)
         } else {
             this.setState({authFailed: true})

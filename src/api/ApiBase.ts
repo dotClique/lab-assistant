@@ -5,9 +5,9 @@ const apiVersion = "v4"
 
 const THEME = "theme";
 
-export const getLocalStorageTheme = (): string | null => localStorage.getItem(THEME);
+export const getLocalTheme = (): string | null => localStorage.getItem(THEME);
 
-export const setLocalStorageTheme = (theme: string) => localStorage.setItem(THEME, theme);
+export const setLocalTheme = (theme: string) => localStorage.setItem(THEME, theme);
 
 export function axiosConfig(token: string, projectId: string, perPage: number | null = null): AxiosRequestConfig {
     return {
@@ -49,4 +49,26 @@ export async function getAllPages<T>(url: string, config: AxiosRequestConfig): P
         }
         nextLink = nextLinks[0][0].slice(1, -1);
     }
+}
+
+// Session Storage helpers
+
+const GITLAB_ACCESS_TOKEN_KEY = "gitLabAccessToken"
+const GITLAB_PROJECT_ID_KEY = "gitLabProjectId"
+
+export const getSessionAccessToken = (): string | null => sessionStorage.getItem(GITLAB_ACCESS_TOKEN_KEY);
+
+export const setSessionAccessToken = (token: string) => sessionStorage.setItem(GITLAB_ACCESS_TOKEN_KEY, token)
+
+export const getSessionProjectId = (): string | null => sessionStorage.getItem(GITLAB_PROJECT_ID_KEY);
+
+export const setSessionProjectId = (token: string) => sessionStorage.setItem(GITLAB_PROJECT_ID_KEY, token);
+
+export const sessionHasCredentials = (): boolean => {
+    return getSessionAccessToken() !== null && getSessionProjectId() !== null;
+};
+
+export const clearSessionCredentials = () => {
+    sessionStorage.removeItem(GITLAB_ACCESS_TOKEN_KEY)
+    sessionStorage.removeItem(GITLAB_PROJECT_ID_KEY)
 }

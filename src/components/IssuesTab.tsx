@@ -43,8 +43,8 @@ export default function IssuesTab() {
             setState(prev => ({...prev,
                 issues: issues, weekdayCreatedTally: weekdayCreatedTally, weekdayClosedTally: weekdayClosedTally
             }));
-        });
-    }, [auth])
+        }).catch(() => auth.setAuthenticated(false))
+    }, [auth, assets])
 
     const {theme} = useContext(ThemeContext)
 
