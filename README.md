@@ -27,4 +27,4 @@ In the project we have used both LocalStorage and SessionStorage, as specified i
 Our graphs will position themselves above the list of data in a tab, when the width of the screen is small enough, which makes the layout flowing, and flexible since it responds well to use across different devices.
 
 ## Testing
-- Jest
+We use Jest to create a snapshot test of the project. An example of how we have used it in testing if the theme of the page actually changes when you toggle it.
