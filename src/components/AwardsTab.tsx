@@ -43,7 +43,7 @@ export default function AwardsTab(): React.ReactElement {
             const topFiveAwardStats = stats.slice(0,5)
             setState(prev => ({...prev, awards: awards, awardStats: topFiveAwardStats}));
         });
-    }, [auth])
+    }, [auth, assets.emoji])
 
     const data = {
         labels: awardStats.map(s => s.name),
