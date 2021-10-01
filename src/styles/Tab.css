@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .tab-content {
     display: flex;
     justify-content: space-evenly;
@@ -21,6 +22,8 @@
     margin-bottom: 2em;
 }
 
+=======
+>>>>>>> Cleanup: Remove random spacing in Tab.css
 .card-container p {
     margin: 0;
 }
