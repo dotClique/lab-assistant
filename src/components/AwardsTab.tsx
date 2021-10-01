@@ -77,7 +77,7 @@ export default function AwardsTab() {
                 <Timeline>
                     {awards.map(a =>
                         <Timeline.Item key={a.id}>
-                            <Text style={{color: theme === "orange" ? "#f50" : "#3F8CE4"}}>{anonymize(names, a.user.id)} </Text>
+                            <Text style={{color: theme === "orange" ? "rgb(255, 85, 0)" : "rgb(63, 140, 228)"}}>{anonymize(names, a.user.id)} </Text>
                             reacted with <Text keyboard>{a.name}</Text> on {a.awardable_type} {a.awardable_id}
                             <br/><Text type={"secondary"}>{a.created_at.slice(0,10)}</Text>
                         </Timeline.Item>

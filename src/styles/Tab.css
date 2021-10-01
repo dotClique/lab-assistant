@@ -38,17 +38,17 @@
 }
 
 .ant-tabs.orange .ant-tabs-tab-btn {
-    color: #f50;
+    color: rgb(255, 85, 0);
 }
 
 .ant-tabs.orange .ant-tabs-ink-bar {
-    background: #f50;
+    background: rgb(255, 85, 0);
 }
 
 .ant-tabs.blue .ant-tabs-tab-btn, .ant-tabs.blue .ant-tabs-ink-bar {
-    color: #3F8CE4;
+    color: rgb(63, 140, 228);
 }
 
 .ant-tabs.blue .ant-tabs-ink-bar {
-    background: #3F8CE4;
+    background: rgb(63, 140, 228);
 }

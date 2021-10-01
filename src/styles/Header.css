@@ -42,9 +42,9 @@
 }
 
 .theme-switch.orange {
-    background-color: #f50;
+    background-color: rgb(255, 85, 0);
 }
 
 .theme-switch.blue {
-    background-color: #3F8CE4;
+    background-color: rgb(63, 140, 228);
 }

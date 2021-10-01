@@ -22,9 +22,9 @@
 }
 
 .awards-list.orange .ant-timeline-item-head {
-    border-color: #f50;
+    border-color: rgb(255, 85, 0);
 }
 
 .awards-list.blue .ant-timeline-item-head {
-    border-color: #3F8CE4;
+    border-color: rgb(63, 140, 228);
 }

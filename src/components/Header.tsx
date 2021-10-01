@@ -15,7 +15,7 @@ function Header() {
                 <h1 className="header-text">Lab Assistant</h1>
                 {auth.authenticated &&
                     (
-                        <Tag color={theme === "orange" ? "#f50" : "#3F8CE4"}>Project: {auth.projectId}</Tag>
+                        <Tag color={theme === "orange" ? "rgb(255, 85, 0)" : "rgb(63, 140, 228)"}>Project: {auth.projectId}</Tag>
                     )
                 }
             </div>

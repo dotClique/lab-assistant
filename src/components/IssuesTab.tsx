@@ -41,10 +41,10 @@ export default function IssuesTab() {
                                 <>
                                     {i.closed_at === null ?
                                         <ClockCircleTwoTone className={"issue-closed-status-icon"}
-                                                            twoToneColor={theme === "orange" ? "#f50" : "#3F8CE4"}/>
+                                                            twoToneColor={theme === "orange" ? "rgb(255, 85, 0)" : "rgb(63, 140, 228)"}/>
                                         :
                                         <CheckCircleTwoTone className={"issue-closed-status-icon"}
-                                                            twoToneColor={"#87d068"}/>}
+                                                            twoToneColor={"rgb(135,208,104)"}/>}
                                     <span className={"issue-card-title"}>{i.title}</span>
                                     <br/>
                                     {i.labels.length > 0 &&
@@ -73,7 +73,7 @@ export default function IssuesTab() {
                                 label: 'issues',
                                 data: weekdayTally,
                                 fill: true,
-                                backgroundColor: theme === "orange" ? 'rgb(255, 85, 0, 0.4)' : 'rgba(63, 140, 228, 0.4)',
+                                backgroundColor: theme === "orange" ? 'rgba(255, 85, 0, 0.4)' : 'rgba(63, 140, 228, 0.4)',
                                 borderColor: theme === "orange" ? 'rgb(255, 85, 0)' : 'rgb(63, 140, 228)'
                             },
                         ],
