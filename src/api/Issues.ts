@@ -1,5 +1,4 @@
-import Axios from "axios";
-import {axiosConfig} from "./ApiBase";
+import {axiosConfig, getAllPages} from "./ApiBase";
 import {User} from "./Users";
 
 interface TimeStats {
@@ -49,7 +48,9 @@ export interface Issue {
 
 export async function getIssues(accessToken: string, projectId: string): Promise<Issue[]> {
     try {
-        return (await Axios.get<Issue[]>("/issues", axiosConfig(accessToken, projectId))).data;
+        return (
+            await getAllPages<Issue[]>("/issues", axiosConfig(accessToken, projectId, 100))
+        ).map(page => page.data).flat();
 
     } catch (e) {
         console.error("Failed to retrieve issues", e);
