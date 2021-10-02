@@ -35,3 +35,26 @@
     display: block;
     overflow: hidden;
 }
+
+.awards-loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.awards-loading-spin {
+    font-size: 5em;
+    margin: 0.8em auto;
+}
+
+.awards-loading-spin.orange {
+    color: rgb(255, 85, 0)
+}
+
+.awards-loading-spin.blue {
+    color: rgb(63, 140, 228)
+}
+
+.awards-loading-text {
+    font-size: 1.5em;
+}

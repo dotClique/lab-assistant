@@ -1,6 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import {Bar} from "react-chartjs-2";
-import {Alert, Timeline, Typography} from "antd";
+import {Alert, Spin, Timeline, Typography} from "antd";
+import { LoadingOutlined } from '@ant-design/icons';
 import {getAllAwards, NoteAwardPair} from "../api/Awards";
 import {AuthContext, AssetsContext, ThemeContext, AssetsContextType} from "../App";
 import '../styles/Tab.css'
@@ -8,6 +9,12 @@ import '../styles/AwardsTab.css'
 import {anonymize} from "../api/Users";
 
 const {Text} = Typography;
+
+interface AwardsTabType {
+    awards: NoteAwardPair[],
+    awardStats: AwardStatType[],
+    loading: boolean
+}
 
 interface AwardStatType {
     name: string,
@@ -24,9 +31,10 @@ export default function AwardsTab(): React.ReactElement {
 
     const auth = useContext(AuthContext);
 
-    const [{awards, awardStats}, setState] = useState<{ awards: NoteAwardPair[], awardStats: AwardStatType[] }>({
+    const [{awards, awardStats, loading}, setState] = useState<AwardsTabType>({
         awards: [],
-        awardStats: []
+        awardStats: [],
+        loading: true
     });
 
     const assets = useContext(AssetsContext);
@@ -47,7 +55,7 @@ export default function AwardsTab(): React.ReactElement {
             // Sort awards by ascending date
             awards.sort((a: NoteAwardPair, b: NoteAwardPair) => Date.parse(b.award.created_at) - Date.parse(a.award.created_at))
             const topFiveAwardStats = stats.slice(0, 5)
-            setState(prev => ({...prev, awards: awards, awardStats: topFiveAwardStats}));
+            setState(prev => ({...prev, awards: awards, awardStats: topFiveAwardStats, loading: false}));
         }).catch(() => auth.setAuthenticated(false))
     }, [auth, assets.emoji])
 
@@ -79,65 +87,72 @@ export default function AwardsTab(): React.ReactElement {
 
     return (
         <div className={"tab-content"}>
-            {awards.length < 1 ?
-                <Alert type="error"
-                       message="No awards used 😢"
-                       description="Try reacting to a comment on an issue or merge request, then refreshing."/> :
-                <>
-                    <div className={"awards-list " + theme}>
-                        <Timeline>
-                            {awards.map(na =>
-                                <Timeline.Item className="comment-timeline-item" key={na.award.id}>
-                                    <UserName id={na.award.user.id} assets={assets} theme={theme}/>
-                                    reacted with <Text keyboard>{assets.emoji[na.award.name] ?? na.award.name}</Text> on
-                                    comment <Text className="comment-snippet"
-                                                  type={"secondary"}>{na.note.body}</Text> by <UserName
-                                    id={na.note.author.id} assets={assets} theme={theme}/>
-                                </Timeline.Item>
-                            )}
-                        </Timeline>
-                    </div>
-                    <div className={"chart-container"}>
-                        <Bar
-                            data={data}
-                            options={
-                                {
-                                    maintainAspectRatio: false,
-                                    scales: {
-                                        y: {
-                                            ticks: {
-                                                stepSize: 1
+            {loading ?
+                <div className={"awards-loading-container"}>
+                    <Spin indicator={<LoadingOutlined className={"awards-loading-spin " + theme} spin />}/>
+                    <p className={"awards-loading-text"}>Gathering awards 🏆 ...</p>
+                </div>
+                :
+                (awards.length < 1 ?
+                        <Alert type="error"
+                               message="No awards used 😢"
+                               description="Try reacting to a comment on an issue or merge request, then refreshing."/>
+                        :
+                        <>
+                            <div className={"awards-list " + theme}>
+                                <Timeline>
+                                    {awards.map(na =>
+                                        <Timeline.Item className="comment-timeline-item" key={na.award.id}>
+                                            <UserName id={na.award.user.id} assets={assets} theme={theme}/> reacted with <Text
+                                            keyboard>{assets.emoji[na.award.name] ?? na.award.name}</Text> on
+                                            comment <Text className="comment-snippet"
+                                                          type={"secondary"}>{na.note.body}</Text> by <UserName
+                                            id={na.note.author.id} assets={assets} theme={theme}/>
+                                        </Timeline.Item>
+                                    )}
+                                </Timeline>
+                            </div>
+                            <div className={"chart-container"}>
+                                <Bar
+                                    data={data}
+                                    options={
+                                        {
+                                            maintainAspectRatio: false,
+                                            scales: {
+                                                y: {
+                                                    ticks: {
+                                                        stepSize: 1
+                                                    },
+                                                },
+                                                x: {
+                                                    ticks: {
+                                                        font: {
+                                                            size: 40
+                                                        }
+                                                    }
+                                                }
                                             },
-                                        },
-                                        x: {
-                                            ticks: {
-                                                font: {
-                                                    size: 40
+                                            plugins: {
+                                                legend: {
+                                                    display: false
+                                                },
+                                                title: {
+                                                    display: true,
+                                                    text: 'Top 5 most used comment awards',
+                                                    font: {
+                                                        size: 18
+                                                    },
+                                                    padding: {
+                                                        top: 10,
+                                                        bottom: 20
+                                                    }
                                                 }
                                             }
                                         }
-                                    },
-                                    plugins: {
-                                        legend: {
-                                            display: false
-                                        },
-                                        title: {
-                                            display: true,
-                                            text: 'Top 5 most used comment awards',
-                                            font: {
-                                                size: 18
-                                            },
-                                            padding: {
-                                                top: 10,
-                                                bottom: 20
-                                            }
-                                        }
                                     }
-                                }
-                            }
-                        />
-                    </div>
-                </>
+                                />
+                            </div>
+                        </>)
             }
         </div>
     )
