@@ -17,11 +17,12 @@ import {
     setSessionAccessToken,
     setSessionProjectId
 } from "./webstorage/WebStorage";
+import {isAuthorized} from "./api/ApiBase";
 
 
 export const AuthContext = React.createContext({
-    authenticated: false,
-    setAuthenticated: (authenticated: boolean) => {
+    authorized: false,
+    setAuthorized: (authorized: boolean) => {
     },
     accessToken: "",
     setAccessToken: (accessToken: string) => {
@@ -32,8 +33,8 @@ export const AuthContext = React.createContext({
 })
 
 export interface AuthContextType {
-    authenticated: boolean,
-    setAuthenticated: (authenticated: boolean) => void,
+    authorized: boolean,
+    setAuthorized: (authorized: boolean) => void,
     accessToken: string,
     setAccessToken: (accessToken: string) => void,
     projectId: string,
@@ -67,14 +68,19 @@ function App() {
     const sessionProjectId = getSessionProjectId();
     const sessionAccessToken = getSessionAccessToken();
 
-    const [{authenticated, accessToken, projectId, theme, assets}, setState] = useState<{
-        authenticated: boolean,
+    if (sessionAccessToken === "" || sessionProjectId === "") {
+        // Empty access token and project id will be accepted in requests, so deny it here
+        clearSessionCredentials()
+    }
+
+    const [{authorized, accessToken, projectId, theme, assets}, setState] = useState<{
+        authorized: boolean,
         accessToken: string,
         projectId: string,
         theme: string,
         assets: AssetsContextType,
     }>({
-        authenticated: sessionHasCredentials(),
+        authorized: sessionHasCredentials(),
         accessToken: sessionAccessToken != null ? sessionAccessToken : "",
         projectId: sessionProjectId != null ? sessionProjectId : "",
         theme: localTheme ?? "orange",
@@ -96,11 +102,27 @@ function App() {
         getEmoji().then(emoji => setState(prev => ({...prev, assets: {...prev.assets, emoji: emoji}})))
     }, []);
 
+    /**
+     * Verify API credentials, and redirect to auth form in case they are invalid
+     */
+    useEffect(() => {
+        if (accessToken === "" || projectId === "") {
+            // Credentials not set, no need to verify them
+            return
+        }
+        isAuthorized(accessToken, projectId).then(authorized => {
+            setState(prev => ({...prev, authorized: authorized}));
+            if (!authorized) {
+                clearSessionCredentials()
+            }
+        })
+    }, [accessToken, projectId])
+
     const authContextProviderValue: AuthContextType = {
-        authenticated: authenticated,
-        setAuthenticated: authenticated => {
-            setState(prevState => ({...prevState, authenticated: authenticated}));
-            if (!authenticated) {
+        authorized: authorized,
+        setAuthorized: authorized => {
+            setState(prevState => ({...prevState, authorized: authorized}));
+            if (!authorized) {
                 clearSessionCredentials()
             }
         },
@@ -121,7 +143,7 @@ function App() {
             <ThemeContext.Provider value={{theme: theme, toggleTheme: toggleTheme}}>
                 <Page>
                     <Header/>
-                    {!authenticated ?
+                    {!authorized ?
                         (
                             <div className={"authFormContainer"}>
                                 <div className={"auth-form"}>

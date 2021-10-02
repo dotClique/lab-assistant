@@ -15,6 +15,14 @@ export function axiosConfig(token: string, projectId: string, perPage: number | 
     }
 }
 
+export function toSnakeCase(camelCase: string): string {
+    // Replace all sequences beginning with an uppercase letter, with _ followed by that sequence in lowercase.
+    return camelCase.match(/^[a-z]+|[A-Z]+[a-z]*/g)
+        ?.map(word => word.toLowerCase())
+            .join("_")
+        ?? "";
+}
+
 export async function isAuthorized(accessToken: string, projectId: string): Promise<boolean> {
     try {
         return (

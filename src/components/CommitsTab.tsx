@@ -29,7 +29,10 @@ export default function CommitsTab() {
     }
 
     useEffect(() => {
+        let isActive = true;
         getCommits(auth.accessToken, auth.projectId).then(commits => {
+            // Don't update if the component has unmounted
+            if (!isActive) return;
             // Get all ISO date strings from date of first commit to current date
             const minDate = new Date(Math.min.apply(Math, commits.map(function(o) { return Date.parse(o.created_at.slice(0,10)); })))
             const maxDate = new Date()
@@ -40,8 +43,11 @@ export default function CommitsTab() {
                 datesTally[activeDates.indexOf(i.created_at.slice(0,10))] += 1
             }
             setState(prev => ({...prev, commits: commits, dates: activeDates, datesTally: datesTally}));
-        }).catch(() => auth.setAuthenticated(false))
-    }, [auth, assets])
+        })
+        return () => {
+            isActive = false;
+        }
+    }, [auth])
 
     const {theme} = useContext(ThemeContext)
 

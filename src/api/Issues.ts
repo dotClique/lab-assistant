@@ -1,7 +1,7 @@
 import {axiosConfig, getAllPages} from "./ApiBase";
 import {User} from "./Users";
 
-interface TimeStats {
+export interface TimeStats {
     time_estimate: number,
     total_time_spent: number,
     // human_time_estimate: number,
@@ -49,5 +49,8 @@ export interface Issue {
 export async function getIssues(accessToken: string, projectId: string): Promise<Issue[]> {
     return (
         getAllPages<Issue[]>("/issues", axiosConfig(accessToken, projectId, 100))
-    ).then(res => res.map(page => page.data).flat());
+    ).then(res => res.map(page => page.data).flat()).catch(e => {
+        console.error("Failed to retrieve issues", e);
+        return [];
+    });
 }
