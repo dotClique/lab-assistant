@@ -21,8 +21,8 @@ import {isAuthorized} from "./api/ApiBase";
 
 
 export const AuthContext = React.createContext({
-    authenticated: false,
-    setAuthenticated: (authenticated: boolean) => {
+    authorized: false,
+    setAuthorized: (authorized: boolean) => {
     },
     accessToken: "",
     setAccessToken: (accessToken: string) => {
@@ -33,8 +33,8 @@ export const AuthContext = React.createContext({
 })
 
 export interface AuthContextType {
-    authenticated: boolean,
-    setAuthenticated: (authenticated: boolean) => void,
+    authorized: boolean,
+    setAuthorized: (authorized: boolean) => void,
     accessToken: string,
     setAccessToken: (accessToken: string) => void,
     projectId: string,
@@ -73,14 +73,14 @@ function App() {
         clearSessionCredentials()
     }
 
-    const [{authenticated, accessToken, projectId, theme, assets}, setState] = useState<{
-        authenticated: boolean,
+    const [{authorized, accessToken, projectId, theme, assets}, setState] = useState<{
+        authorized: boolean,
         accessToken: string,
         projectId: string,
         theme: string,
         assets: AssetsContextType,
     }>({
-        authenticated: sessionHasCredentials(),
+        authorized: sessionHasCredentials(),
         accessToken: sessionAccessToken != null ? sessionAccessToken : "",
         projectId: sessionProjectId != null ? sessionProjectId : "",
         theme: localTheme ?? "orange",
@@ -111,7 +111,7 @@ function App() {
             return
         }
         isAuthorized(accessToken, projectId).then(authorized => {
-            setState(prev => ({...prev, authenticated: authorized}));
+            setState(prev => ({...prev, authorized: authorized}));
             if (!authorized) {
                 clearSessionCredentials()
             }
@@ -119,10 +119,10 @@ function App() {
     }, [accessToken, projectId])
 
     const authContextProviderValue: AuthContextType = {
-        authenticated: authenticated,
-        setAuthenticated: authenticated => {
-            setState(prevState => ({...prevState, authenticated: authenticated}));
-            if (!authenticated) {
+        authorized: authorized,
+        setAuthorized: authorized => {
+            setState(prevState => ({...prevState, authorized: authorized}));
+            if (!authorized) {
                 clearSessionCredentials()
             }
         },
@@ -143,7 +143,7 @@ function App() {
             <ThemeContext.Provider value={{theme: theme, toggleTheme: toggleTheme}}>
                 <Page>
                     <Header/>
-                    {!authenticated ?
+                    {!authorized ?
                         (
                             <div className={"authFormContainer"}>
                                 <div className={"auth-form"}>

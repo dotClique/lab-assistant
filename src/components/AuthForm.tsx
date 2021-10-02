@@ -32,7 +32,7 @@ export default class AuthForm extends React.Component<{}, TokenInputState> {
             this.setState({authFailed: false})
             auth.setAccessToken(accessToken)
             auth.setProjectId(projectId)
-            auth.setAuthenticated(true)
+            auth.setAuthorized(true)
         } else {
             this.setState({authFailed: true})
         }

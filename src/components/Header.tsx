@@ -13,7 +13,7 @@ function Header() {
             <img src={logo} className="App-logo" alt="logo" onClick={toggleTheme}/>
             <div className={"header-text-container"}>
                 <h1 className="header-text">Lab Assistant</h1>
-                {auth.authenticated &&
+                {auth.authorized &&
                     (
                         <Tag color={theme === "orange" ? "rgb(255, 85, 0)" : "rgb(63, 140, 228)"}>Project: {auth.projectId}</Tag>
                     )
