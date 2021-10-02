@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import {AuthContext, AssetsContext, ThemeContext} from "../App";
+import {AuthContext, NamesContext, ThemeContext} from "../App";
 import {Commit, getCommits} from "../api/Commits";
 import {List} from "antd";
 import {Line} from "react-chartjs-2";
@@ -15,7 +15,7 @@ export default function CommitsTab() {
         datesTally: []
     });
 
-    const assets = useContext(AssetsContext);
+    const names = useContext(NamesContext);
 
     const getDatesBetweenDates = (startDate: Date, endDate: Date) => {
         let dates: Date[] = []
@@ -29,10 +29,7 @@ export default function CommitsTab() {
     }
 
     useEffect(() => {
-        let isActive = true;
         getCommits(auth.accessToken, auth.projectId).then(commits => {
-            // Don't update if the component has unmounted
-            if (!isActive) return;
             // Get all ISO date strings from date of first commit to current date
             const minDate = new Date(Math.min.apply(Math, commits.map(function(o) { return Date.parse(o.created_at.slice(0,10)); })))
             const maxDate = new Date()
@@ -43,11 +40,8 @@ export default function CommitsTab() {
                 datesTally[activeDates.indexOf(i.created_at.slice(0,10))] += 1
             }
             setState(prev => ({...prev, commits: commits, dates: activeDates, datesTally: datesTally}));
-        })
-        return () => {
-            isActive = false;
-        }
-    }, [auth])
+        });
+    }, [auth, names])
 
     const {theme} = useContext(ThemeContext)
 
@@ -63,7 +57,7 @@ export default function CommitsTab() {
                         <List.Item>
                             <List.Item.Meta
                                 title={item.title}
-                                description={anonymizeString(assets.names, item.author_email)}
+                                description={anonymizeString(names, item.author_email)}
                             />
                         </List.Item>
                     )}
