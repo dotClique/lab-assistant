@@ -28,3 +28,10 @@
 .awards-list.blue .ant-timeline-item-head {
     border-color: rgb(63, 140, 228);
 }
+
+.awards-list .comment-snippet {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+    overflow: hidden;
+}

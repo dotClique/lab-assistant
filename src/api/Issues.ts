@@ -1,7 +1,7 @@
 import {axiosConfig, getAllPages} from "./ApiBase";
 import {User} from "./Users";
 
-interface TimeStats {
+export interface TimeStats {
     time_estimate: number,
     total_time_spent: number,
     // human_time_estimate: number,
