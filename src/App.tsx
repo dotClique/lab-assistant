@@ -7,6 +7,7 @@ import {getNames} from "./api/Users";
 import {getEmoji} from "./api/Awards";
 import './App.css';
 import AuthForm from "./components/AuthForm";
+import { getLocalStorageTheme, setLocalStorageTheme } from './api/ApiBase';
 
 
 export const AuthContext = React.createContext({
@@ -52,6 +53,8 @@ export const AssetsContext = React.createContext<AssetsContextType>({
 });
 
 function App() {
+    const localTheme = getLocalStorageTheme();
+
     const [{authenticated, accessToken, projectId, theme, assets}, setState] = useState<{
         authenticated: boolean,
         accessToken: string,
@@ -62,7 +65,7 @@ function App() {
         authenticated: false,
         accessToken: "",
         projectId: "",
-        theme: "orange",
+        theme: localTheme ?? "orange",
         assets: {
             names: {
                 nouns: ["unknown"], adjectives: [""]
@@ -71,7 +74,9 @@ function App() {
         }
     });
     const toggleTheme = () => {
-        setState(prev => ({...prev, theme: theme === "orange" ? "blue" : "orange"}))
+        const newTheme = theme === "orange" ? "blue" : "orange";
+        setState(prev => ({...prev, theme: newTheme}))
+        setLocalStorageTheme(newTheme);
     }
     useEffect(() => {
         getNames().then(names => setState(prev => ({...prev, assets: {...prev.assets, names: names}})))
