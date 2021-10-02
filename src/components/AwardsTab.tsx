@@ -1,49 +1,80 @@
 import React, {useContext, useEffect, useState} from "react";
 import {Bar} from "react-chartjs-2";
-import {Timeline, Typography} from "antd";
-import {Award, getAwards} from "../api/Awards";
-import {AuthContext, NamesContext, ThemeContext} from "../App";
+import {Alert, Radio, RadioChangeEvent, Space, Spin, Timeline, Typography} from "antd";
+import {LoadingOutlined} from '@ant-design/icons';
+import {getAllAwards, NoteAwardPair} from "../api/Awards";
+import {AuthContext, AssetsContext, ThemeContext, AssetsContextType} from "../App";
 import '../styles/Tab.css'
 import '../styles/AwardsTab.css'
 import {anonymize} from "../api/Users";
+import {Noteable} from "../api/Notes";
 
 const {Text} = Typography;
 
-interface AwardStatType {
-    name: string,
-    times_used : number
+interface AwardsTabType {
+    awards: NoteAwardPair[],
+    activeAwards: NoteAwardPair[],
+    awardStats: AwardStatType[],
+    activeNotableFilter?: Noteable,
+    loading: boolean,
 }
 
-export default function AwardsTab() {
+interface AwardStatType {
+    name: string,
+    times_used: number
+}
+
+function UserName({id, theme, assets}: { id: number, theme: string, assets: AssetsContextType }): React.ReactElement {
+    return <Text style={{color: theme === "orange" ? "rgb(255, 85, 0)" : "rgb(63, 140, 228)"}}>
+        {anonymize(assets.names, id)}
+    </Text>;
+}
+
+export default function AwardsTab(): React.ReactElement {
 
     const auth = useContext(AuthContext);
 
-    const [{awards, awardStats}, setState] = useState<{awards: Award[], awardStats: AwardStatType[]}>({
+    const [{awards, activeAwards, awardStats, activeNotableFilter, loading}, setState] = useState<AwardsTabType>({
         awards: [],
-        awardStats: []
+        activeAwards: [],
+        awardStats: [],
+        loading: true
     });
 
-    const names = useContext(NamesContext);
+    const assets = useContext(AssetsContext);
 
     useEffect(() => {
-        getAwards(auth.accessToken, auth.projectId).then(awards => {
-            // Count times used for each award used
-            const awardsTally = awards.reduce((acc, a) => acc.set(a.name, 1 + (acc.get(a.name) || 0)), new Map());
-            const stats: AwardStatType[] = []
-            awardsTally.forEach((times_used: number, award_name: string) => {
-                stats.push({
-                    "name": award_name,
-                    "times_used": times_used
-                })
-            })
-            // Sort award stats by descending 'times used'
-            stats.sort((a: AwardStatType, b: AwardStatType) => b.times_used - a.times_used)
-            // Sort awards by ascending date
-            awards.sort((a: Award, b: Award) => Date.parse(b.created_at) - Date.parse(a.created_at))
-            const topFiveAwardStats = stats.slice(0,5)
-            setState(prev => ({...prev, awards: awards, awardStats: topFiveAwardStats}));
-        });
+        let isActive = true;
+        getAllAwards(auth.accessToken, auth.projectId).then(awards => {
+            // Don't update if the component has unmounted
+            if (!isActive) return;
+            setState(prev => ({...prev, awards: awards}));
+        })
+        return () => {
+            isActive = false;
+        }
     }, [auth])
+
+    useEffect(() => {
+        // Apply active filter
+        const activeAwards = activeNotableFilter == null ? awards : awards.filter(an => an.note.noteable_type === activeNotableFilter);
+        // Count times used for each award used
+        const awardsTally = activeAwards.reduce((acc, a) => acc.set(a.award.name, 1 + (acc.get(a.award.name) || 0)), new Map());
+        const stats: AwardStatType[] = []
+        awardsTally.forEach((times_used: number, award_name: string) => {
+            stats.push({
+                "name": assets.emoji[award_name] ?? award_name,
+                "times_used": times_used
+            })
+        })
+        // Sort award stats by descending 'times used'
+        stats.sort((a: AwardStatType, b: AwardStatType) => b.times_used - a.times_used)
+        // Sort awards by ascending date
+        activeAwards.sort((a: NoteAwardPair, b: NoteAwardPair) => Date.parse(b.award.created_at) - Date.parse(a.award.created_at))
+        const topFiveAwardStats = stats.slice(0, 5)
+        setState(prev => ({...prev, awardStats: topFiveAwardStats, activeAwards: activeAwards, loading: false}))
+
+    }, [awards, activeNotableFilter, assets.emoji]);
 
     const data = {
         labels: awardStats.map(s => s.name),
@@ -69,55 +100,102 @@ export default function AwardsTab() {
         ],
     };
 
+    const radioOptions = [
+        {label: "Both", value: ""},
+        {label: "Merge requests", value: "MergeRequest"},
+        {label: "Issues", value: "Issue"},
+    ];
+
+    const updateFilter = (e: RadioChangeEvent) => {
+        setState(prev => ({
+            ...prev,
+            activeNotableFilter: e.target.value === "" ? null : e.target.value
+        }));
+    }
+
     const {theme} = useContext(ThemeContext)
 
     return (
-        <div className={"tab-content"}>
-            <div className={"awards-list " + theme}>
-                <Timeline>
-                    {awards.map(a =>
-                        <Timeline.Item key={a.id}>
-                            <Text style={{color: theme === "orange" ? "#f50" : "#3F8CE4"}}>{anonymize(names, a.user.id)} </Text>
-                            reacted with <Text keyboard>{a.name}</Text> on {a.awardable_type} {a.awardable_id}
-                            <br/><Text type={"secondary"}>{a.created_at.slice(0,10)}</Text>
-                        </Timeline.Item>
-                    )}
-                </Timeline>
-            </div>
-            <div className={"chart-container"}>
-                <Bar
-                    data={data}
-                    options={
-                        {
-                            maintainAspectRatio: false,
-                            scales: {
-                                y: {
-                                    ticks: {
-                                        stepSize: 1
+        <>
+            <Space direction="vertical" className="noteable-filter-container">
+                <Text strong={true}>Show reactions to comments on:</Text>
+                <Radio.Group onChange={updateFilter} size="large" options={radioOptions} defaultValue=""
+                             optionType="button" buttonStyle="solid"/>
+            </Space>
+            <div className={"tab-content"}>
+                {loading ?
+                    <div className={"awards-loading-container"}>
+                        <Spin indicator={<LoadingOutlined className={"awards-loading-spin " + theme} spin/>}/>
+                        <p className={"awards-loading-text"}>Gathering awards 🏆 ...</p>
+                    </div>
+                    :
+                    activeAwards.length < 1 ?
+                        <Alert type="error"
+                               message={"No awards used " + (activeNotableFilter == null ? "" : "for active filter ") + "😢"}
+                               description={
+                                   "Try reacting to a comment on an issue or merge request"
+                                   + (activeNotableFilter == null ? "" : " or clearing the filter") + ", then refreshing."
+                               }/>
+                        :
+                        <>
+                            <div className={"awards-list " + theme}>
+                                <Timeline>
+                                    {activeAwards.map(na =>
+                                        <Timeline.Item className="comment-timeline-item" key={na.award.id}>
+                                            <UserName id={na.award.user.id} assets={assets} theme={theme}/> reacted
+                                            with <Text
+                                            keyboard>{assets.emoji[na.award.name] ?? na.award.name}</Text> on
+                                            comment <Text className="comment-snippet"
+                                                          type={"secondary"}>{na.note.body}</Text> by <UserName
+                                            id={na.note.author.id} assets={assets} theme={theme}/>
+                                        </Timeline.Item>
+                                    )}
+                                </Timeline>
+                            </div>
+                            <div className={"chart-container"}>
+                                <Bar
+                                    data={data}
+                                    options={
+                                        {
+                                            maintainAspectRatio: false,
+                                            scales: {
+                                                y: {
+                                                    ticks: {
+                                                        stepSize: 1
+                                                    },
+                                                },
+                                                x: {
+                                                    ticks: {
+                                                        font: {
+                                                            size: 40
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            plugins: {
+                                                legend: {
+                                                    display: false
+                                                },
+                                                title: {
+                                                    display: true,
+                                                    text: 'Top 5 most used comment awards',
+                                                    font: {
+                                                        size: 18
+                                                    },
+                                                    padding: {
+                                                        top: 10,
+                                                        bottom: 20
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
-                                }
-                            },
-                            plugins: {
-                                legend: {
-                                    display: false
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Top 5 most used awards',
-                                    font: {
-                                        size: 18
-                                    },
-                                    padding: {
-                                        top: 10,
-                                        bottom: 20
-                                    }
-                                }
-                            }
-                        }
-                    }
-                />
+                                />
+                            </div>
+                        </>
+                }
             </div>
-        </div>
+        </>
     )
-
-};
+}
+;
