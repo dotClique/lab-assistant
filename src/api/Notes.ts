@@ -30,7 +30,6 @@ export async function getAllNotesOnNoteable(noteableType: string, noteableIid: n
         return (
             await getAllPages<Note[]>(`/${toSnakeCase(noteableType)}s/${noteableIid}/notes`, axiosConfig(accessToken, projectId, 100))
         ).map(page => page.data).flat();
-
     } catch (e) {
         console.error(`Failed to retrieve notes on Noteable ${noteableIid} of type ${noteableType}`, e);
         return [];

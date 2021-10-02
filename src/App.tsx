@@ -17,6 +17,7 @@ import {
     setSessionAccessToken,
     setSessionProjectId
 } from "./webstorage/WebStorage";
+import {isAuthorized} from "./api/ApiBase";
 
 
 export const AuthContext = React.createContext({
@@ -67,6 +68,11 @@ function App() {
     const sessionProjectId = getSessionProjectId();
     const sessionAccessToken = getSessionAccessToken();
 
+    if (sessionAccessToken === "" || sessionProjectId === "") {
+        // Empty access token and project id will be accepted in requests, so deny it here
+        clearSessionCredentials()
+    }
+
     const [{authenticated, accessToken, projectId, theme, assets}, setState] = useState<{
         authenticated: boolean,
         accessToken: string,
@@ -95,6 +101,22 @@ function App() {
         getNames().then(names => setState(prev => ({...prev, assets: {...prev.assets, names: names}})))
         getEmoji().then(emoji => setState(prev => ({...prev, assets: {...prev.assets, emoji: emoji}})))
     }, []);
+
+    /**
+     * Verify API credentials, and redirect to auth form in case they are invalid
+     */
+    useEffect(() => {
+        if (accessToken === "" || projectId === "") {
+            // Credentials not set, no need to verify them
+            return
+        }
+        isAuthorized(accessToken, projectId).then(authorized => {
+            setState(prev => ({...prev, authenticated: authorized}));
+            if (!authorized) {
+                clearSessionCredentials()
+            }
+        })
+    }, [accessToken, projectId])
 
     const authContextProviderValue: AuthContextType = {
         authenticated: authenticated,
