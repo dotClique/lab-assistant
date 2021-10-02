@@ -28,7 +28,7 @@ export interface NoteableType {
 export async function getAllNotesOnNoteable(noteableType: string, noteableIid: number, accessToken: string, projectId: string): Promise<Note[]> {
     try {
         return (
-            await getAllPages<Note[]>(`/${toSnakeCase(noteableType)}s/${noteableIid}/notes`, axiosConfig(accessToken, projectId, 100))
+            await getAllPages<Note[]>(`/${toSnakeCase(noteableType)}s/${noteableIid}/notes`, axiosConfig(accessToken, projectId, {per_page: 100}))
         ).map(page => page.data).flat();
     } catch (e) {
         console.error(`Failed to retrieve notes on Noteable ${noteableIid} of type ${noteableType}`, e);

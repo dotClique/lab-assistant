@@ -48,7 +48,7 @@ export interface Issue {
 
 export async function getIssues(accessToken: string, projectId: string): Promise<Issue[]> {
     return (
-        getAllPages<Issue[]>("/issues", axiosConfig(accessToken, projectId, 100))
+        getAllPages<Issue[]>("/issues", axiosConfig(accessToken, projectId, {per_page: 100}))
     ).then(res => res.map(page => page.data).flat()).catch(e => {
         console.error("Failed to retrieve issues", e);
         return [];
