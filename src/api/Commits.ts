@@ -14,11 +14,16 @@ export interface Commit {
     committer_email: string
     committed_date: string
     web_url: string
+    stats: {
+        additions: number,
+        deletions: number
+        total: number
+    }
 }
 
 export async function getCommits(accessToken: string, projectId: string): Promise<Commit[]> {
     return (
-        getAllPages<Commit[]>(`/repository/commits`, axiosConfig(accessToken, projectId, 100))
+        getAllPages<Commit[]>(`/repository/commits?with_stats=true`, axiosConfig(accessToken, projectId, 100))
     ).then(res => res.map(page => page.data).flat()).catch(e => {
         console.error("Failed to retrieve commits", e);
         return [];
