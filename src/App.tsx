@@ -16,7 +16,7 @@ import {
     sessionHasCredentials,
     setSessionAccessToken,
     setSessionProjectId
-} from "./api/ApiBase";
+} from "./webstorage/WebStorage";
 
 
 export const AuthContext = React.createContext({
