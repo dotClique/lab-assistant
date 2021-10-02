@@ -1,32 +1,35 @@
 import React, {useContext, useEffect, useState} from "react";
 import {AuthContext, AssetsContext, ThemeContext} from "../App";
-import {getIssues, Issue} from "../api/Issues";
-import {Card, Tag} from "antd";
+import {getIssues, Issue, IssueState} from "../api/Issues";
+import {Card, Radio, RadioChangeEvent, Space, Tag, Typography} from "antd";
 import {anonymize} from "../api/Users";
 import {CheckCircleTwoTone, ClockCircleTwoTone} from '@ant-design/icons';
 import {Radar} from "react-chartjs-2";
 import '../styles/IssuesTab.css'
 
+const {Text} = Typography;
+
 interface IssuesTabState {
     issues: Issue[],
     weekdayCreatedTally: number[],
-    weekdayClosedTally: number[]
+    weekdayClosedTally: number[],
+    issueStatusFilter?: IssueState,
 }
 
 export default function IssuesTab() {
 
     const auth = useContext(AuthContext);
-    const [{issues, weekdayCreatedTally, weekdayClosedTally}, setState] = useState<IssuesTabState>({
+    const [{issues, weekdayCreatedTally, weekdayClosedTally, issueStatusFilter}, setState] = useState<IssuesTabState>({
         issues: [],
         weekdayCreatedTally: [],
-        weekdayClosedTally: []
+        weekdayClosedTally: [],
     });
 
     const assets = useContext(AssetsContext);
 
     const weekdayFromISODateString = (isoString: string) => {
         // Strip ISO string to only include date, and adjust week to start on monday
-        return (new Date(Date.parse(isoString.slice(0,10))).getDay() - 1) % 7
+        return (new Date(Date.parse(isoString.slice(0, 10))).getDay() - 1) % 7
     }
 
     useEffect(() => {
@@ -43,7 +46,8 @@ export default function IssuesTab() {
                     weekdayClosedTally[weekdayFromISODateString(i.closed_at)] += 1
                 }
             }
-            setState(prev => ({...prev,
+            setState(prev => ({
+                ...prev,
                 issues: issues, weekdayCreatedTally: weekdayCreatedTally, weekdayClosedTally: weekdayClosedTally
             }));
         })
@@ -54,11 +58,27 @@ export default function IssuesTab() {
 
     const {theme} = useContext(ThemeContext)
 
+    const radioOptions: { label: string, value: IssueState | "" }[] = [
+        {label: "Either", value: ""},
+        {label: "Closed", value: "closed"},
+        {label: "Open", value: "opened"},
+    ];
+
+    const updateFilter = (e: RadioChangeEvent) => {
+        const newValue = e.target.value === "" ? null : e.target.value;
+        setState(prev => ({...prev, issueStatusFilter: newValue}));
+    };
+
     return (
         <div className={"tab-content"}>
             <div className={"tab-data-content"}>
                 <div>
-                    {issues.map(i =>
+                    <Space direction="vertical" className="noteable-filter-container">
+                        <Text strong={true}>Show issues that are:</Text>
+                        <Radio.Group onChange={updateFilter} size="large" options={radioOptions} defaultValue=""
+                                     optionType="button" buttonStyle="solid"/>
+                    </Space>
+                    {(issueStatusFilter == null ? issues : issues.filter(i => i.state === issueStatusFilter)).map(i =>
                         <div key={i.iid}>
                             <Card
                                 title={
