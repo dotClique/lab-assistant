@@ -1,19 +1,22 @@
 import React, {useContext, useEffect, useState} from "react";
 import {Bar} from "react-chartjs-2";
-import {Alert, Spin, Timeline, Typography} from "antd";
+import {Alert, Radio, RadioChangeEvent, Space, Spin, Timeline, Typography} from "antd";
 import {LoadingOutlined} from '@ant-design/icons';
 import {getAllAwards, NoteAwardPair} from "../api/Awards";
 import {AuthContext, AssetsContext, ThemeContext, AssetsContextType} from "../App";
 import '../styles/Tab.css'
 import '../styles/AwardsTab.css'
 import {anonymize} from "../api/Users";
+import {Noteable} from "../api/Notes";
 
 const {Text} = Typography;
 
 interface AwardsTabType {
     awards: NoteAwardPair[],
+    activeAwards: NoteAwardPair[],
     awardStats: AwardStatType[],
-    loading: boolean
+    activeNotableFilter?: Noteable,
+    loading: boolean,
 }
 
 interface AwardStatType {
@@ -31,8 +34,9 @@ export default function AwardsTab(): React.ReactElement {
 
     const auth = useContext(AuthContext);
 
-    const [{awards, awardStats, loading}, setState] = useState<AwardsTabType>({
+    const [{awards, activeAwards, awardStats, activeNotableFilter, loading}, setState] = useState<AwardsTabType>({
         awards: [],
+        activeAwards: [],
         awardStats: [],
         loading: true
     });
@@ -44,27 +48,33 @@ export default function AwardsTab(): React.ReactElement {
         getAllAwards(auth.accessToken, auth.projectId).then(awards => {
             // Don't update if the component has unmounted
             if (!isActive) return;
-            // Count times used for each award used
-            const awardsTally = awards.reduce((acc, a) => acc.set(a.award.name, 1 + (acc.get(a.award.name) || 0)), new Map());
-            const stats: AwardStatType[] = []
-            awardsTally.forEach((times_used: number, award_name: string) => {
-                stats.push({
-                    "name": assets.emoji[award_name] ?? award_name,
-                    "times_used": times_used
-                })
-            })
-            // Sort award stats by descending 'times used'
-            stats.sort((a: AwardStatType, b: AwardStatType) => b.times_used - a.times_used)
-            // Sort awards by ascending date
-            awards.sort((a: NoteAwardPair, b: NoteAwardPair) => Date.parse(b.award.created_at) - Date.parse(a.award.created_at))
-            const topFiveAwardStats = stats.slice(0, 5)
-            // Only set state if component hasn't been unmounted since useEffect was called
-            setState(prev => ({...prev, awards: awards, awardStats: topFiveAwardStats, loading: false}));
+            setState(prev => ({...prev, awards: awards}));
         })
         return () => {
             isActive = false;
         }
-    }, [auth, assets.emoji])
+    }, [auth])
+
+    useEffect(() => {
+        // Apply active filter
+        const activeAwards = activeNotableFilter == null ? awards : awards.filter(an => an.note.noteable_type === activeNotableFilter);
+        // Count times used for each award used
+        const awardsTally = activeAwards.reduce((acc, a) => acc.set(a.award.name, 1 + (acc.get(a.award.name) || 0)), new Map());
+        const stats: AwardStatType[] = []
+        awardsTally.forEach((times_used: number, award_name: string) => {
+            stats.push({
+                "name": assets.emoji[award_name] ?? award_name,
+                "times_used": times_used
+            })
+        })
+        // Sort award stats by descending 'times used'
+        stats.sort((a: AwardStatType, b: AwardStatType) => b.times_used - a.times_used)
+        // Sort awards by ascending date
+        activeAwards.sort((a: NoteAwardPair, b: NoteAwardPair) => Date.parse(b.award.created_at) - Date.parse(a.award.created_at))
+        const topFiveAwardStats = stats.slice(0, 5)
+        setState(prev => ({...prev, awardStats: topFiveAwardStats, activeAwards: activeAwards, loading: false}))
+
+    }, [awards, activeNotableFilter, assets.emoji]);
 
     const data = {
         labels: awardStats.map(s => s.name),
@@ -90,27 +100,50 @@ export default function AwardsTab(): React.ReactElement {
         ],
     };
 
+    const radioOptions = [
+        {label: "Both", value: ""},
+        {label: "Merge requests", value: "MergeRequest"},
+        {label: "Issues", value: "Issue"},
+    ];
+
+    const updateFilter = (e: RadioChangeEvent) => {
+        setState(prev => ({
+            ...prev,
+            activeNotableFilter: e.target.value === "" ? null : e.target.value
+        }));
+    }
+
     const {theme} = useContext(ThemeContext)
 
     return (
-        <div className={"tab-content"}>
-            {loading ?
-                <div className={"awards-loading-container"}>
-                    <Spin indicator={<LoadingOutlined className={"awards-loading-spin " + theme} spin />}/>
-                    <p className={"awards-loading-text"}>Gathering awards 🏆 ...</p>
-                </div>
-                :
-                (awards.length < 1 ?
+        <>
+            <Space direction="vertical" className="noteable-filter-container">
+                <Text strong={true}>Show reactions to comments on:</Text>
+                <Radio.Group onChange={updateFilter} size="large" options={radioOptions} defaultValue=""
+                             optionType="button" buttonStyle="solid"/>
+            </Space>
+            <div className={"tab-content"}>
+                {loading ?
+                    <div className={"awards-loading-container"}>
+                        <Spin indicator={<LoadingOutlined className={"awards-loading-spin " + theme} spin/>}/>
+                        <p className={"awards-loading-text"}>Gathering awards 🏆 ...</p>
+                    </div>
+                    :
+                    activeAwards.length < 1 ?
                         <Alert type="error"
-                               message="No awards used 😢"
-                               description="Try reacting to a comment on an issue or merge request, then refreshing."/>
+                               message={"No awards used " + (activeNotableFilter == null ? "" : "for active filter ") + "😢"}
+                               description={
+                                   "Try reacting to a comment on an issue or merge request"
+                                   + (activeNotableFilter == null ? "" : " or clearing the filter") + ", then refreshing."
+                               }/>
                         :
                         <>
                             <div className={"awards-list " + theme}>
                                 <Timeline>
-                                    {awards.map(na =>
+                                    {activeAwards.map(na =>
                                         <Timeline.Item className="comment-timeline-item" key={na.award.id}>
-                                            <UserName id={na.award.user.id} assets={assets} theme={theme}/> reacted with <Text
+                                            <UserName id={na.award.user.id} assets={assets} theme={theme}/> reacted
+                                            with <Text
                                             keyboard>{assets.emoji[na.award.name] ?? na.award.name}</Text> on
                                             comment <Text className="comment-snippet"
                                                           type={"secondary"}>{na.note.body}</Text> by <UserName
@@ -159,8 +192,10 @@ export default function AwardsTab(): React.ReactElement {
                                     }
                                 />
                             </div>
-                        </>)
-            }
-        </div>
+                        </>
+                }
+            </div>
+        </>
     )
-};
+}
+;
