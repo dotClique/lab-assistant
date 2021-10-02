@@ -17,12 +17,7 @@ export interface Commit {
 }
 
 export async function getCommits(accessToken: string, projectId: string): Promise<Commit[]> {
-    try {
-        return (
-            await getAllPages<Commit[]>(`/repository/commits`, axiosConfig(accessToken, projectId, 100))
-        ).map(page => page.data).flat();
-    } catch (e) {
-        console.error("Failed to retrieve commits", e);
-        return [];
-    }
+    return (
+        getAllPages<Commit[]>(`/repository/commits`, axiosConfig(accessToken, projectId, 100))
+    ).then(res => res.map(page => page.data).flat());
 }

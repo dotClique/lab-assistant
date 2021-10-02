@@ -3,12 +3,6 @@ import Axios, {AxiosRequestConfig, AxiosResponse} from "axios";
 const gitlabInstanceUrl = "https://gitlab.stud.idi.ntnu.no";
 const apiVersion = "v4"
 
-const THEME = "theme";
-
-export const getLocalStorageTheme = (): string | null => localStorage.getItem(THEME);
-
-export const setLocalStorageTheme = (theme: string) => localStorage.setItem(THEME, theme);
-
 export function axiosConfig(token: string, projectId: string, perPage: number | null = null): AxiosRequestConfig {
     return {
         headers: {
