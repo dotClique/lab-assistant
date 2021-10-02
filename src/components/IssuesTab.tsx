@@ -30,7 +30,10 @@ export default function IssuesTab() {
     }
 
     useEffect(() => {
+        let isActive = true;
         getIssues(auth.accessToken, auth.projectId).then(issues => {
+            // Don't update if the component has unmounted
+            if (!isActive) return;
             // Count number of issues created and closed per weekday
             const weekdayCreatedTally = new Array(7).fill(0)
             const weekdayClosedTally = new Array(7).fill(0)
@@ -44,7 +47,10 @@ export default function IssuesTab() {
                 issues: issues, weekdayCreatedTally: weekdayCreatedTally, weekdayClosedTally: weekdayClosedTally
             }));
         })
-    }, [auth, assets])
+        return () => {
+            isActive = false;
+        };
+    }, [auth])
 
     const {theme} = useContext(ThemeContext)
 
@@ -118,7 +124,7 @@ export default function IssuesTab() {
                                 }
                             }
                         }
-                    } />
+                    }/>
             </div>
         </div>
     )
