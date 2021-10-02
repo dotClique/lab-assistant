@@ -3,14 +3,14 @@ import Axios, {AxiosRequestConfig, AxiosResponse} from "axios";
 const gitlabInstanceUrl = "https://gitlab.stud.idi.ntnu.no";
 const apiVersion = "v4"
 
-export function axiosConfig(token: string, projectId: string, params: object = {}): AxiosRequestConfig {
+export function axiosConfig(token: string, projectId: string, perPage: number | null = null): AxiosRequestConfig {
     return {
         headers: {
             "PRIVATE-TOKEN": token,
         },
         baseURL: `${gitlabInstanceUrl}/api/${apiVersion}/projects/${encodeURIComponent(projectId)}`,
         params: {
-            ...params,
+            per_page: perPage
         }
     }
 }

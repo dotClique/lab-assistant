@@ -30,7 +30,7 @@ export async function getAwardsOnNote(noteable: Noteable, noteableIid: number, n
     return (
         await getAllPages<Award[]>(
             `/${toSnakeCase(noteable)}s/${noteableIid}/notes/${noteId}/award_emoji`,
-            axiosConfig(accessToken, projectId, {per_page: 100}))
+            axiosConfig(accessToken, projectId, 100))
     ).map(page => page.data).flat();
 }
 
