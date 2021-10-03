@@ -44,7 +44,9 @@ export default function IssuesTab() {
 
     const weekdayFromISODateString = (isoString: string) => {
         // Strip ISO string to only include date, and adjust week to start on monday
-        return (new Date(Date.parse(isoString.slice(0, 10))).getDay() - 1) % 7
+        // Requires hack to get modulo with negative numbers:
+        // https://web.archive.org/web/20090717035140if_/javascript.about.com/od/problemsolving/a/modulobug.htm
+        return ((new Date(Date.parse(isoString.slice(0, 10))).getDay() - 1) % 7 + 7) % 7
     }
 
     useEffect(() => {
