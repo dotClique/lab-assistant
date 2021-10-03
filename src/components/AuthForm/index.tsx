@@ -75,7 +75,7 @@ export default class AuthForm extends React.Component<{}, TokenInputState> {
                                 name="projectId"
                                 rules={[{required: true, message: 'Please input the project identification!'}]}
                             >
-                                <Input placeholder={"e.g. '12345' or 'it2810-h21/team-321/project-2'"}/>
+                                <Input aria-label={"projectIdInput"} placeholder={"e.g. '12345' or 'it2810-h21/team-321/project-2'"}/>
                             </Form.Item>
 
                             <Form.Item
@@ -83,11 +83,11 @@ export default class AuthForm extends React.Component<{}, TokenInputState> {
                                 name="accessToken"
                                 rules={[{required: true, message: 'Please input your access token!'}]}
                             >
-                                <Input.Password placeholder={"e.g. 'f3bba1Qw7MjrbvwxLGUn'"}/>
+                                <Input.Password aria-label={"accessTokenInput"} placeholder={"e.g. 'f3bba1Qw7MjrbvwxLGUn'"}/>
                             </Form.Item>
 
                             <Form.Item>
-                                <Button type="primary" htmlType="submit">
+                                <Button aria-label={"submitCredentials"} type="primary" htmlType="submit">
                                     Submit
                                 </Button>
                             </Form.Item>
