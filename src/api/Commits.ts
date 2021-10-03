@@ -1,5 +1,11 @@
 import {axiosConfig, getAllPages} from "./ApiBase";
 
+export interface DateStat {
+    commits: number,
+    additions: number,
+    deletions: number
+}
+
 export interface Commit {
     id: string
     short_id: string
@@ -14,11 +20,7 @@ export interface Commit {
     committer_email: string
     committed_date: string
     web_url: string
-    stats: {
-        additions: number,
-        deletions: number
-        total: number
-    }
+    stats: DateStat
 }
 
 export async function getCommits(accessToken: string, projectId: string): Promise<Commit[]> {
