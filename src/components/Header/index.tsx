@@ -9,7 +9,7 @@ function Header() {
     const {theme, toggleTheme} = useContext(ThemeContext)
     const auth = useContext(AuthContext)
     return (
-        <div className={"header" + (theme === "blue" ? " blue" : "")}>
+        <div className={"header " + theme} role={"banner"}>
             <img src={logo} className="App-logo" alt="logo" onClick={toggleTheme}/>
             <div className={"header-text-container"}>
                 <h1 className="header-text">Lab Assistant</h1>
