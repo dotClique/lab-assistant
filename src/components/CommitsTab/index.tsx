@@ -1,11 +1,11 @@
 import React, {useContext, useEffect, useState} from "react";
-import {AssetsContext, AuthContext, ThemeContext} from "../App";
-import {Commit, DateStat, getCommits} from "../api/Commits";
+import {AssetsContext, AuthContext, ThemeContext} from "../../App";
+import {Commit, DateStat, getCommits} from "../../api/Commits";
 import {DatePicker, List, Space, Spin} from "antd";
 import {LoadingOutlined} from '@ant-design/icons';
 import {Line} from "react-chartjs-2";
-import '../styles/CommitsTab.css';
-import {anonymizeString} from "../api/Users";
+import './styles.css';
+import {anonymizeString} from "../../api/Users";
 import moment from "moment";
 import {ChartDataset, ChartOptions, ChartTypeRegistry} from "chart.js";
 

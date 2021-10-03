@@ -1,6 +1,6 @@
-import "../styles/Info.css";
+import "./styles.css";
 import {Alert} from "antd";
-import { setLocalInfoViewedStatus } from "../webstorage/WebStorage";
+import { setLocalInfoViewedStatus } from "../../webstorage/WebStorage";
 
 function Info() {
     return (

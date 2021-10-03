@@ -1,7 +1,7 @@
-import logo from "../gitlab-logo-w.png";
+import logo from "../../gitlab-logo-w.png";
 import React, {useContext} from "react";
-import "../styles/Header.css";
-import {AuthContext, ThemeContext} from "../App"
+import "./styles.css";
+import {AuthContext, ThemeContext} from "../../App"
 import {Switch, Tag} from "antd";
 import {BgColorsOutlined} from '@ant-design/icons';
 
