@@ -83,7 +83,7 @@ export default class AuthForm extends React.Component<{}, TokenInputState> {
                                 name="accessToken"
                                 rules={[{required: true, message: 'Please input your access token!'}]}
                             >
-                                <Input placeholder={"e.g. 'f3bba1Qw7MjrbvwxLGUn'"}/>
+                                <Input.Password placeholder={"e.g. 'f3bba1Qw7MjrbvwxLGUn'"}/>
                             </Form.Item>
 
                             <Form.Item>
