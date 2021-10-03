@@ -11,3 +11,8 @@
     margin-bottom: 2em;
     position: sticky;
 }
+
+.clickable {
+    user-select: none;
+    cursor: pointer;
+}

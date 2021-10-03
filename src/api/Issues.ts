@@ -10,6 +10,16 @@ export interface TimeStats {
 
 export type IssueState = "opened" | "closed";
 
+export interface LabelDetails {
+    id: number,
+    name: string,
+    color: string,
+    description: string,
+    // description_html: string,
+    text_color: string,
+    // remove_on_close: boolean,
+}
+
 export interface Issue {
     id: number,
     iid: number,
@@ -21,7 +31,7 @@ export interface Issue {
     updated_at: string,
     closed_at: string,
     closed_by: User | null,
-    labels: string[],
+    labels: LabelDetails[],
     milestone: string,
     assignees: (User | null)[],
     author: User,
@@ -50,7 +60,7 @@ export interface Issue {
 
 export async function getIssues(accessToken: string, projectId: string): Promise<Issue[]> {
     return (
-        getAllPages<Issue[]>("/issues", axiosConfig(accessToken, projectId, {per_page: 100}))
+        getAllPages<Issue[]>("/issues", axiosConfig(accessToken, projectId, {per_page: 100, with_labels_details: true}))
     ).then(res => res.map(page => page.data).flat()).catch(e => {
         console.error("Failed to retrieve issues", e);
         return [];

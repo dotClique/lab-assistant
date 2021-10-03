@@ -81,8 +81,8 @@ export default function IssuesTab() {
             const n: string[] = [];
             for (const issue of issues) {
                 for (const label of issue.labels) {
-                    if (!n.includes(label)) {
-                        n.push(label);
+                    if (!n.includes(label.name)) {
+                        n.push(label.name);
                     }
                 }
             }
@@ -99,7 +99,7 @@ export default function IssuesTab() {
                 filteredIssues: (p.issueStateFilter == null && p.issuesLabelFilter.length === 0) ?
             p.issues : p.issues.filter(i =>
             (p.issueStateFilter == null || i.state === p.issueStateFilter)
-            && (p.issuesLabelFilter.length === 0 || p.issuesLabelFilter.some(label => i.labels.includes(label)))
+            && (p.issuesLabelFilter.length === 0 || i.labels.some(label => p.issuesLabelFilter.includes(label.name)))
             )
         })), [issues, issuesLabelFilter, issueStateFilter]);
 
@@ -177,7 +177,12 @@ export default function IssuesTab() {
                                         <br/>
                                         {i.labels.length > 0 &&
                                         i.labels.map(l => (
-                                            <Tag style={{cursor: "pointer", userSelect: "none"}} onClick={toggleLabelInFilter} key={l}>{l}</Tag>
+                                            <Tag className="clickable"
+                                                 onClick={toggleLabelInFilter}
+                                                 color={l.color}
+                                                 style={{color: l.text_color}}>
+                                                {l.name}
+                                            </Tag>
                                         ))
                                         }
                                     </>
