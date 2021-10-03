@@ -1,12 +1,12 @@
 import React, {useContext, useEffect, useState} from "react";
 import {AuthContext, AssetsContext, ThemeContext} from "../../App";
 import {getIssues, Issue, IssueState} from "../../api/Issues";
-import {Card, Radio, RadioChangeEvent, Select, Space, Tag} from "antd";
-import {anonymize} from "../../api/Users";
-import {CheckCircleTwoTone, ClockCircleTwoTone} from '@ant-design/icons';
+import {Radio, RadioChangeEvent, Select, Space} from "antd";
 import {Radar} from "react-chartjs-2";
 import './styles.css'
 import {ChartDataset, ChartTypeRegistry} from "chart.js";
+import {getRadarOptions, weekdays} from "./utlis";
+import IssueList from "../IssueList";
 
 const {Option} = Select;
 
@@ -170,70 +170,15 @@ export default function IssuesTab() {
             </Space>
             </div>
             <div className={"tab-data-content"}>
-                <div className={"tab-data-list"}>
-                    {filteredIssues.map(i =>
-                        <div key={i.iid}>
-                            <Card
-                                title={
-                                    <>
-                                        {i.closed_at === null ?
-                                            <ClockCircleTwoTone className={"issue-closed-status-icon"}
-                                                                twoToneColor={theme === "orange" ? "rgb(255, 85, 0)" : "rgb(63, 140, 228)"}/>
-                                            :
-                                            <CheckCircleTwoTone className={"issue-closed-status-icon"}
-                                                                twoToneColor={"rgb(135,208,104)"}/>}
-                                        <span className={"issue-card-title"}>{i.title}</span>
-                                        <br/>
-                                        {i.labels.length > 0 &&
-                                        i.labels.map(l => (
-                                            <Tag className="clickable"
-                                                 onClick={toggleLabelInFilter}
-                                                 color={l.color}
-                                                 style={{color: l.text_color}}>
-                                                {l.name}
-                                            </Tag>
-                                        ))
-                                        }
-                                    </>
-                                }
-                                bordered={true}
-                            >
-                                <p><strong>Time spent:</strong> {Math.round(i.time_stats.total_time_spent / 3600)}h</p>
-                                <p><strong>Author:</strong> {anonymize(assets.names, i.author.id)}</p>
-                                <p><strong>Upvotes:</strong> {i.upvotes}</p>
-                            </Card>
-                            <br/>
-                        </div>
-                    )}
-                </div>
+                <IssueList issues={filteredIssues} names={assets.names} theme={theme} toggleLabelInFilter={toggleLabelInFilter}/>
+
                 <div className={"tab-data-chart"}>
                     <Radar
-                        data={{
-                            labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-                            datasets: issuesDatasets,
-                        }}
-                        options={
-                            {
-                                maintainAspectRatio: false,
-                                plugins: {
-                                    title: {
-                                        display: true,
-                                        text: (issueStateFilter == null ? "I" : issueStateFilter === "opened" ? "Open i" : "Closed i") + 'ssues per weekday',
-                                        font: {
-                                            size: 18
-                                        },
-                                        padding: {
-                                            top: 10,
-                                            bottom: 20
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        data={{datasets: issuesDatasets, labels: weekdays}}
+                        options={getRadarOptions(issueStateFilter)}
                     />
                 </div>
             </div>
         </div>
     )
-
 }
