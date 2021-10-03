@@ -161,7 +161,7 @@ export default function IssuesTab() {
             </Space>
             </div>
             <div className={"tab-data-content"}>
-                <div>
+                <div className={"tab-data-list"}>
                     {filteredIssues.map(i =>
                         <div key={i.iid}>
                             <Card
@@ -197,7 +197,7 @@ export default function IssuesTab() {
                         </div>
                     )}
                 </div>
-                <div className={"chart-container"}>
+                <div className={"tab-data-chart"}>
                     <Radar
                         data={{
                             labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],

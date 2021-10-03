@@ -26,18 +26,19 @@
     .tab-data-content {
         flex-direction: column-reverse;
     }
-    .chart-container {
+    .tab-data-chart {
         max-width: none !important;
     }
 }
 
-.chart-container {
+.tab-data-chart {
     width: 100%;
     max-width: 800px;
     height: 70vh;
     max-height: 600px;
     margin-right: 1em;
     margin-bottom: 2em;
+    overflow: hidden;
 }
 
 .card-container p {
@@ -70,4 +71,46 @@
 
 .ant-tabs.blue .ant-tabs-ink-bar {
     background: rgb(63, 140, 228);
+}
+
+@media screen and (max-width: 1200px) {
+    .tab-data-list {
+        max-width: none !important;
+        min-width: auto !important;
+        margin: 0 !important;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .tab-data-list {
+        padding: 0 !important;
+    }
+}
+
+.tab-data-list {
+    width: 100%;
+    max-width: 500px;
+    min-width: 300px;
+    margin: 0 4em;
+    flex-shrink: 2;
+}
+
+.tab-data-list .ant-timeline-item-content {
+    font-size: 1.2em;
+    padding-bottom: 1.5em;
+}
+
+.tab-data-list.orange .ant-timeline-item-head {
+    border-color: rgb(255, 85, 0);
+}
+
+.tab-data-list.blue .ant-timeline-item-head {
+    border-color: rgb(63, 140, 228);
+}
+
+.tab-data-list .comment-snippet {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+    overflow: hidden;
 }

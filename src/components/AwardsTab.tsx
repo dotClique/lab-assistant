@@ -140,7 +140,7 @@ export default function AwardsTab(): React.ReactElement {
                                        }/>
                                 :
                                 <>
-                                    <div className={"awards-list " + theme}>
+                                    <div className={"tab-data-list " + theme}>
                                         <Timeline>
                                             {activeAwards.map(na =>
                                                 <Timeline.Item className="comment-timeline-item" key={na.award.id}>
@@ -155,7 +155,7 @@ export default function AwardsTab(): React.ReactElement {
                                             )}
                                         </Timeline>
                                     </div>
-                                    <div className={"chart-container"}>
+                                    <div className={"tab-data-chart"}>
                                         <Bar
                                             data={data}
                                             options={
