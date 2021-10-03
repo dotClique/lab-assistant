@@ -106,7 +106,7 @@ export default function IssuesTab() {
     const {theme} = useContext(ThemeContext)
 
     const radioOptions: { label: string, value: IssueState | "" }[] = [
-        {label: "Either", value: ""},
+        {label: "All", value: ""},
         {label: "Closed", value: "closed"},
         {label: "Open", value: "opened"},
     ];
@@ -153,11 +153,10 @@ export default function IssuesTab() {
         <div className={"tab-content"}>
             <div className={"tab-parameters-content"}>
                 <Space direction="vertical" className="noteable-filter-container">
-                <Text strong={true}>Show issues that are:</Text>
                 <Radio.Group onChange={updateStateFilter} size="large" options={radioOptions} defaultValue=""
                              optionType="button" buttonStyle="solid"/>
                 <Select style={{minWidth: "20em", maxWidth: "100%", overflow: "visible"}} mode="multiple" allowClear
-                        value={issuesLabelFilter} placeholder="Labels to filter on"
+                        value={issuesLabelFilter} placeholder="Filter by labels"
                         onChange={updateLabelFilter}>{labels.map(l => <Option key={l} value={l}>{l}</Option>)}</Select>
             </Space>
             </div>

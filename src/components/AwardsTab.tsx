@@ -100,7 +100,7 @@ export default function AwardsTab(): React.ReactElement {
     };
 
     const radioOptions = [
-        {label: "Both", value: ""},
+        {label: "All", value: ""},
         {label: "Merge requests", value: "MergeRequest"},
         {label: "Issues", value: "Issue"},
     ];
@@ -126,7 +126,6 @@ export default function AwardsTab(): React.ReactElement {
                     <div className={"tab-content"}>
                         <div className={"tab-parameters-content"}>
                             <Space direction="vertical" className="noteable-filter-container">
-                                <Text strong={true}>Show reactions to comments on:</Text>
                                 <Radio.Group onChange={updateFilter} size="large" options={radioOptions} defaultValue=""
                                              optionType="button" buttonStyle="solid"/>
                             </Space>
