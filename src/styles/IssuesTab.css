@@ -1,5 +1,7 @@
 .issue-card-title {
     margin-right: 0.75em;
+    white-space: pre-wrap;
+    text-overflow: clip;
 }
 
 .issue-closed-status-icon {
