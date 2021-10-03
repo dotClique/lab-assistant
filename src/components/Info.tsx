@@ -7,7 +7,6 @@ function Info() {
         <Alert type="info" message="Welcome!"
                description="Click on the different tabs to view various data from the repository" closable onClose={() => {
                    setLocalInfoViewedStatus("true");
-                   console.log("Viewed: True");
                }}/>
     );
 }
