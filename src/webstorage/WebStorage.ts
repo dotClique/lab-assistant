@@ -1,5 +1,7 @@
 const THEME = "theme";
 
+const INFO_VIEWED = "info";
+
 export const getLocalTheme = (): string | null => localStorage.getItem(THEME);
 
 export const setLocalTheme = (theme: string) => localStorage.setItem(THEME, theme);
@@ -23,3 +25,7 @@ export const clearSessionCredentials = () => {
     sessionStorage.removeItem(GITLAB_ACCESS_TOKEN_KEY)
     sessionStorage.removeItem(GITLAB_PROJECT_ID_KEY)
 }
+
+export const getLocalInfoViewedStatus = (): string | null => localStorage.getItem(INFO_VIEWED);
+
+export const setLocalInfoViewedStatus = (infoViewed: string) => localStorage.setItem(INFO_VIEWED, infoViewed);
