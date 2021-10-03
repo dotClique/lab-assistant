@@ -4,6 +4,7 @@ import {getAllNotes, Note, Noteable} from "./Notes";
 import {getIssues} from "./Issues";
 import {getMergeRequests} from "./MergeRequest";
 
+// Define the types of the content of an award
 export interface Award {
     "id": number,
     "name": string,
@@ -21,11 +22,13 @@ export interface Award {
     "awardable_type": string
 }
 
+// Define the types of a note-award pair
 export interface NoteAwardPair {
     note: Note,
     award: Award
 }
 
+// Get all the awards on a specific note in a GitLab repository
 export async function getAwardsOnNote(noteable: Noteable, noteableIid: number, noteId: number, accessToken: string, projectId: string): Promise<Award[]> {
     return (
         await getAllPages<Award[]>(
@@ -34,6 +37,7 @@ export async function getAwardsOnNote(noteable: Noteable, noteableIid: number, n
     ).map(page => page.data).flat();
 }
 
+// Get all awards in a GitLab repository
 export async function getAllAwards(accessToken: string, projectId: string): Promise<NoteAwardPair[]> {
     return (await Promise.all(
         (await getAllNotes(
@@ -53,6 +57,7 @@ export async function getAllAwards(accessToken: string, projectId: string): Prom
     )).flat();
 }
 
+// Get an emoji corresponding to a specific award string
 export async function getEmoji(): Promise<{ [id: string]: string }> {
     return (await Axios.get<{ [id: string]: string }>("/emoji.json", {responseType: "json"})).data;
 }
