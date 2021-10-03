@@ -280,5 +280,9 @@ function getCommitStats(commits: Commit[]) {
     }
     const minMoment = moment(minDate)
     const maxMoment = moment(maxDate)
-    return {activeDates, dateStats, minMoment, maxMoment};
+    return {
+        dates: activeDates, dateStats: dateStats,
+        minMoment: minMoment, maxMoment: maxMoment,
+        fromMoment: minMoment, toMoment: maxMoment
+    };
 }
