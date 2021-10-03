@@ -8,13 +8,15 @@ export interface TimeStats {
     // human_total_time_spent: number,
 }
 
+export type IssueState = "opened" | "closed";
+
 export interface Issue {
     id: number,
     iid: number,
     project_id: number,
     title: string,
     description: string,
-    state: string,
+    state: IssueState,
     created_at: string,
     updated_at: string,
     closed_at: string,
