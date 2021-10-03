@@ -21,7 +21,7 @@ interface IssuesTabState {
 }
 
 export default function IssuesTab() {
-
+    // Use auth context
     const auth = useContext(AuthContext);
     const [{
         issues,
@@ -39,7 +39,8 @@ export default function IssuesTab() {
         labels: [],
         filteredIssues: [],
     });
-
+    
+    // Use assets context
     const assets = useContext(AssetsContext);
 
     const weekdayFromISODateString = (isoString: string) => {
@@ -49,15 +50,13 @@ export default function IssuesTab() {
         return ((new Date(Date.parse(isoString.slice(0, 10))).getDay() - 1) % 7 + 7) % 7
     }
 
+    // Retrieve issues
     useEffect(() => {
         let isActive = true;
         getIssues(auth.accessToken, auth.projectId).then(issues => {
             // Don't update if the component has unmounted
             if (!isActive) return;
-            setState(prev => ({
-                ...prev,
-                issues: issues
-            }));
+            setState(prev => ({...prev, issues: issues}));
         })
         return () => {
             isActive = false;
@@ -77,6 +76,7 @@ export default function IssuesTab() {
         setState(prev => ({...prev, weekdayCreatedTally: weekdayCreatedTally, weekdayClosedTally: weekdayClosedTally}))
     }, [filteredIssues])
 
+    // Retrieve all unique labels of issues
     useEffect(() => {
         const distinctLabels = (issues: Issue[]) => {
             const n: string[] = [];
@@ -94,6 +94,7 @@ export default function IssuesTab() {
         }))
     }, [issues]);
 
+    // Filter issues
     useEffect(() =>
         setState( p => ({
             ...p,
@@ -104,23 +105,28 @@ export default function IssuesTab() {
             )
         })), [issues, issuesLabelFilter, issueStateFilter]);
 
+    // Use theme context
     const {theme} = useContext(ThemeContext)
 
+    // Define radio options for filter
     const radioOptions: { label: string, value: IssueState | "" }[] = [
         {label: "All", value: ""},
         {label: "Closed", value: "closed"},
         {label: "Open", value: "opened"},
     ];
 
+    // Update state filter based on radio option
     const updateStateFilter = (e: RadioChangeEvent) => {
         const newValue = e.target.value === "" ? null : e.target.value;
         setState(prev => ({...prev, issueStateFilter: newValue}));
     };
 
+    // Update label filer based on chosen label
     const updateLabelFilter = (value: string[]) => {
         setState(prev => ({...prev, issuesLabelFilter: value}));
     };
 
+    // Add label of issue to filter on click
     const toggleLabelInFilter: React.MouseEventHandler<HTMLSpanElement> = e => {
         const label = e.currentTarget.innerText;
         setState(prev => ({...prev, issuesLabelFilter:
@@ -130,6 +136,8 @@ export default function IssuesTab() {
             : [...prev.issuesLabelFilter, label]
         }))
     }
+
+    // Define the issues datasets
     const issuesDatasets: ChartDataset<keyof ChartTypeRegistry, number[]>[] = [
         {
             label: 'created',
