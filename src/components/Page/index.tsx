@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/Page.css";
+import "./styles.css";
 
 function Page(props: { children: React.ReactNode }) {
     return (

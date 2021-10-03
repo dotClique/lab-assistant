@@ -2,12 +2,11 @@ import React, {useContext, useEffect, useState} from "react";
 import {Bar} from "react-chartjs-2";
 import {Alert, Radio, RadioChangeEvent, Space, Spin, Timeline, Typography} from "antd";
 import {LoadingOutlined} from '@ant-design/icons';
-import {getAllAwards, NoteAwardPair} from "../api/Awards";
-import {AuthContext, AssetsContext, ThemeContext, AssetsContextType} from "../App";
-import '../styles/Tab.css'
-import '../styles/AwardsTab.css'
-import {anonymize} from "../api/Users";
-import {Noteable} from "../api/Notes";
+import {getAllAwards, NoteAwardPair} from "../../api/Awards";
+import {AuthContext, AssetsContext, ThemeContext, AssetsContextType} from "../../App";
+import './styles.css'
+import {anonymize} from "../../api/Users";
+import {Noteable} from "../../api/Notes";
 
 const {Text} = Typography;
 

@@ -1,8 +1,8 @@
 import React from "react";
 import {Alert, Button, Form, Input, Typography} from "antd";
-import {AuthContext, AuthContextType} from "../App";
-import {isAuthorized} from "../api/ApiBase";
-import '../styles/AuthForm.css';
+import {AuthContext, AuthContextType} from "../../App";
+import {isAuthorized} from "../../api/ApiBase";
+import './styles.css';
 
 const {Paragraph, Text} = Typography;
 

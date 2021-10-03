@@ -1,10 +1,10 @@
 import {Tabs} from 'antd';
-import '../styles/Tab.css';
+import './styles.css';
 import React, {useContext} from "react";
-import AwardsTab from "./AwardsTab";
-import IssuesTab from "./IssuesTab";
-import CommitsTab from "./CommitsTab";
-import {ThemeContext} from "../App";
+import AwardsTab from "../AwardsTab";
+import IssuesTab from "../IssuesTab";
+import CommitsTab from "../CommitsTab";
+import {ThemeContext} from "../../App";
 
 const {TabPane} = Tabs;
 
