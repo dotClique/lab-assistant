@@ -1,14 +1,13 @@
 import React, {useContext, useEffect, useState} from "react";
 import {AuthContext, AssetsContext, ThemeContext} from "../App";
 import {getIssues, Issue, IssueState} from "../api/Issues";
-import {Card, Radio, RadioChangeEvent, Select, Space, Tag, Typography} from "antd";
+import {Card, Radio, RadioChangeEvent, Select, Space, Tag} from "antd";
 import {anonymize} from "../api/Users";
 import {CheckCircleTwoTone, ClockCircleTwoTone} from '@ant-design/icons';
 import {Radar} from "react-chartjs-2";
 import '../styles/IssuesTab.css'
 import {ChartDataset, ChartTypeRegistry} from "chart.js";
 
-const {Text} = Typography;
 const {Option} = Select;
 
 interface IssuesTabState {
