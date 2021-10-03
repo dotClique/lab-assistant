@@ -11,6 +11,7 @@ import {Noteable} from "../api/Notes";
 
 const {Text} = Typography;
 
+// Define the types of the awards tab
 interface AwardsTabType {
     awards: NoteAwardPair[],
     activeAwards: NoteAwardPair[],
@@ -19,11 +20,15 @@ interface AwardsTabType {
     loading: boolean,
 }
 
+// Define the types of the award stat
 interface AwardStatType {
     name: string,
     times_used: number
 }
 
+/**
+ * Function that returns a text component with an anonymized username and a specific style
+ */
 function UserName({id, theme, assets}: { id: number, theme: string, assets: AssetsContextType }): React.ReactElement {
     return <Text style={{color: theme === "orange" ? "rgb(255, 85, 0)" : "rgb(63, 140, 228)"}}>
         {anonymize(assets.names, id)}
@@ -43,6 +48,7 @@ export default function AwardsTab(): React.ReactElement {
 
     const assets = useContext(AssetsContext);
 
+    // Retrieve awards
     useEffect(() => {
         let isActive = true;
         getAllAwards(auth.accessToken, auth.projectId).then(awards => {
@@ -75,6 +81,7 @@ export default function AwardsTab(): React.ReactElement {
         setState(prev => ({...prev, awardStats: topFiveAwardStats, activeAwards: activeAwards}))
     }, [awards, activeNotableFilter, assets.emoji]);
 
+    // Define data that will be visualized
     const data = {
         labels: awardStats.map(s => s.name),
         datasets: [
@@ -99,6 +106,7 @@ export default function AwardsTab(): React.ReactElement {
         ],
     };
 
+    // Define radio options for the filter
     const radioOptions = [
         {label: "All", value: ""},
         {label: "Merge requests", value: "MergeRequest"},
