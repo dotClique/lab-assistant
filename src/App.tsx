@@ -15,7 +15,8 @@ import {
     getSessionProjectId,
     sessionHasCredentials,
     setSessionAccessToken,
-    setSessionProjectId
+    setSessionProjectId,
+    getLocalInfoViewedStatus
 } from "./webstorage/WebStorage";
 import {isAuthorized} from "./api/ApiBase";
 
@@ -97,6 +98,13 @@ function App() {
         setLocalTheme(newTheme);
     }
 
+    const closeInfo = () => {
+        if (getLocalInfoViewedStatus() === "true") {
+            return false;
+        }
+        else return true;
+    }
+
     useEffect(() => {
         getNames().then(names => setState(prev => ({...prev, assets: {...prev.assets, names: names}})))
         getEmoji().then(emoji => setState(prev => ({...prev, assets: {...prev.assets, emoji: emoji}})))
@@ -152,7 +160,8 @@ function App() {
                             </div>
                         ) : (
                             <AssetsContext.Provider value={assets}>
-                                <Info/>
+                                {closeInfo() &&
+                                    <Info/>}
                                 <Tab/>
                             </AssetsContext.Provider>
                         )
