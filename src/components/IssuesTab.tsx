@@ -6,6 +6,7 @@ import {anonymize} from "../api/Users";
 import {CheckCircleTwoTone, ClockCircleTwoTone} from '@ant-design/icons';
 import {Radar} from "react-chartjs-2";
 import '../styles/IssuesTab.css'
+import {ChartDataset, ChartTypeRegistry} from "chart.js";
 
 const {Text} = Typography;
 const {Option} = Select;
@@ -17,6 +18,7 @@ interface IssuesTabState {
     issueStateFilter?: IssueState,
     issuesLabelFilter: string[],
     labels: string[],
+    filteredIssues: Issue[],
 }
 
 export default function IssuesTab() {
@@ -28,13 +30,15 @@ export default function IssuesTab() {
         weekdayClosedTally,
         issueStateFilter,
         issuesLabelFilter,
-        labels
+        labels,
+        filteredIssues,
     }, setState] = useState<IssuesTabState>({
         issues: [],
         weekdayCreatedTally: [],
         weekdayClosedTally: [],
         issuesLabelFilter: [],
         labels: [],
+        filteredIssues: [],
     });
 
     const assets = useContext(AssetsContext);
@@ -49,24 +53,28 @@ export default function IssuesTab() {
         getIssues(auth.accessToken, auth.projectId).then(issues => {
             // Don't update if the component has unmounted
             if (!isActive) return;
-            // Count number of issues created and closed per weekday
-            const weekdayCreatedTally = new Array(7).fill(0)
-            const weekdayClosedTally = new Array(7).fill(0)
-            for (const i of issues) {
-                weekdayCreatedTally[weekdayFromISODateString(i.created_at)] += 1
-                if (i.closed_at !== null) {
-                    weekdayClosedTally[weekdayFromISODateString(i.closed_at)] += 1
-                }
-            }
             setState(prev => ({
                 ...prev,
-                issues: issues, weekdayCreatedTally: weekdayCreatedTally, weekdayClosedTally: weekdayClosedTally
+                issues: issues
             }));
         })
         return () => {
             isActive = false;
         };
     }, [auth])
+
+    useEffect(() => {
+        // Count number of issues created and closed per weekday
+        const weekdayCreatedTally = new Array(7).fill(0)
+        const weekdayClosedTally = new Array(7).fill(0)
+        for (const i of filteredIssues) {
+            weekdayCreatedTally[weekdayFromISODateString(i.created_at)] += 1
+            if (i.closed_at !== null) {
+                weekdayClosedTally[weekdayFromISODateString(i.closed_at)] += 1
+            }
+        }
+        setState(prev => ({...prev, weekdayCreatedTally: weekdayCreatedTally, weekdayClosedTally: weekdayClosedTally}))
+    }, [filteredIssues])
 
     useEffect(() => {
         const distinctLabels = (issues: Issue[]) => {
@@ -84,6 +92,16 @@ export default function IssuesTab() {
             ...prev, labels: distinctLabels(prev.issues)
         }))
     }, [issues]);
+
+    useEffect(() =>
+        setState( p => ({
+            ...p,
+                filteredIssues: (p.issueStateFilter == null && p.issuesLabelFilter.length === 0) ?
+            p.issues : p.issues.filter(i =>
+            (p.issueStateFilter == null || i.state === p.issueStateFilter)
+            && (p.issuesLabelFilter.length === 0 || p.issuesLabelFilter.some(label => i.labels.includes(label)))
+            )
+        })), [issues, issuesLabelFilter, issueStateFilter]);
 
     const {theme} = useContext(ThemeContext)
 
@@ -108,24 +126,41 @@ export default function IssuesTab() {
             setState(prev => ({...prev, issuesLabelFilter: [...prev.issuesLabelFilter, label]}))
         }
     }
+    const issuesDatasets: ChartDataset<keyof ChartTypeRegistry, number[]>[] = [
+        {
+            label: 'created',
+            data: weekdayCreatedTally,
+            fill: true,
+            backgroundColor: theme === "orange" ? 'rgba(255, 85, 0, 0.4)' : 'rgba(63, 140, 228, 0.4)',
+            borderColor: theme === "orange" ? 'rgb(255, 85, 0)' : 'rgb(63, 140, 228)'
+        },
+    ];
+
+    if (issueStateFilter !== "opened") {
+        issuesDatasets.push({
+            label: 'closed',
+            data: weekdayClosedTally,
+            fill: true,
+            backgroundColor: 'rgba(135,208,104,0.4)',
+            borderColor: 'rgb(135,208,104)'
+        });
+    }
 
     return (
         <div className={"tab-content"}>
+            <div className={"tab-parameters-content"}>
+                <Space direction="vertical" className="noteable-filter-container">
+                <Text strong={true}>Show issues that are:</Text>
+                <Radio.Group onChange={updateStateFilter} size="large" options={radioOptions} defaultValue=""
+                             optionType="button" buttonStyle="solid"/>
+                <Select style={{minWidth: "20em", maxWidth: "100%", overflow: "visible"}} mode="multiple" allowClear
+                        value={issuesLabelFilter} placeholder="Labels to filter on"
+                        onChange={updateLabelFilter}>{labels.map(l => <Option key={l} value={l}>{l}</Option>)}</Select>
+            </Space>
+            </div>
             <div className={"tab-data-content"}>
                 <div>
-                    <Space direction="vertical" className="noteable-filter-container">
-                        <Text strong={true}>Show issues that are:</Text>
-                        <Radio.Group onChange={updateStateFilter} size="large" options={radioOptions} defaultValue=""
-                                     optionType="button" buttonStyle="solid"/>
-                        <Select style={{minWidth: "20em", maxWidth: "100%", overflow: "visible"}} mode="multiple" allowClear
-                                value={issuesLabelFilter} placeholder="Labels to filter on"
-                                onChange={updateLabelFilter}>{labels.map(l => <Option key={l} value={l}>{l}</Option>)}</Select>
-                    </Space>
-                    {((issueStateFilter == null && issuesLabelFilter.length === 0) ?
-                        issues : issues.filter(i =>
-                            (issueStateFilter == null || i.state === issueStateFilter)
-                            && (issuesLabelFilter.length === 0 || issuesLabelFilter.some(label => i.labels.includes(label)))
-                        )).map(i =>
+                    {filteredIssues.map(i =>
                         <div key={i.iid}>
                             <Card
                                 title={
@@ -159,21 +194,7 @@ export default function IssuesTab() {
                     <Radar
                         data={{
                             labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-                            datasets: [
-                                {
-                                    label: 'created',
-                                    data: weekdayCreatedTally,
-                                    fill: true,
-                                    backgroundColor: theme === "orange" ? 'rgba(255, 85, 0, 0.4)' : 'rgba(63, 140, 228, 0.4)',
-                                    borderColor: theme === "orange" ? 'rgb(255, 85, 0)' : 'rgb(63, 140, 228)'
-                                }, {
-                                    label: 'closed',
-                                    data: weekdayClosedTally,
-                                    fill: true,
-                                    backgroundColor: 'rgba(135,208,104,0.4)',
-                                    borderColor: 'rgb(135,208,104)'
-                                },
-                            ],
+                            datasets: issuesDatasets,
                         }}
                         options={
                             {
@@ -181,7 +202,7 @@ export default function IssuesTab() {
                                 plugins: {
                                     title: {
                                         display: true,
-                                        text: 'Issues per weekday',
+                                        text: (issueStateFilter == null ? "I" : issueStateFilter === "opened" ? "Open i" : "Closed i") + 'ssues per weekday',
                                         font: {
                                             size: 18
                                         },
