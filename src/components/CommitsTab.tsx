@@ -4,7 +4,6 @@ import {Commit, getCommits} from "../api/Commits";
 import {List, DatePicker, Spin} from "antd";
 import {LoadingOutlined} from '@ant-design/icons';
 import {Line} from "react-chartjs-2";
-import '../styles/CommitsTab.css';
 import {anonymizeString} from "../api/Users";
 import moment from "moment";
 
@@ -167,7 +166,7 @@ export default function CommitsTab() {
                 }
             </div>
             <div className={"tab-data-content"}>
-                <div className={"commits-list"}>
+                <div className={"tab-data-list " + theme}>
                     <List
                         size="large"
                         header={<div style={{fontSize: 20}}><strong>Project commits</strong></div>}
@@ -183,7 +182,7 @@ export default function CommitsTab() {
                         )}
                     />
                 </div>
-                <div className={"chart-container"}>
+                <div className={"tab-data-chart"}>
                     <Line
                         data={{
                             labels: dates.slice(fromIndex, toIndex + 1),
