@@ -48,7 +48,7 @@ export default function AwardsTab(): React.ReactElement {
         getAllAwards(auth.accessToken, auth.projectId).then(awards => {
             // Don't update if the component has unmounted
             if (!isActive) return;
-            setState(prev => ({...prev, awards: awards}));
+            setState(prev => ({...prev, awards: awards, loading: false}));
         })
         return () => {
             isActive = false;
@@ -72,8 +72,7 @@ export default function AwardsTab(): React.ReactElement {
         // Sort awards by ascending date
         activeAwards.sort((a: NoteAwardPair, b: NoteAwardPair) => Date.parse(b.award.created_at) - Date.parse(a.award.created_at))
         const topFiveAwardStats = stats.slice(0, 5)
-        setState(prev => ({...prev, awardStats: topFiveAwardStats, activeAwards: activeAwards, loading: false}))
-
+        setState(prev => ({...prev, awardStats: topFiveAwardStats, activeAwards: activeAwards}))
     }, [awards, activeNotableFilter, assets.emoji]);
 
     const data = {
