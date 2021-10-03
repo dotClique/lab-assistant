@@ -117,84 +117,92 @@ export default function AwardsTab(): React.ReactElement {
 
     return (
         <>
-            <Space direction="vertical" className="noteable-filter-container">
-                <Text strong={true}>Show reactions to comments on:</Text>
-                <Radio.Group onChange={updateFilter} size="large" options={radioOptions} defaultValue=""
-                             optionType="button" buttonStyle="solid"/>
-            </Space>
-            <div className={"tab-content"}>
-                {loading ?
-                    <div className={"awards-loading-container"}>
-                        <Spin indicator={<LoadingOutlined className={"awards-loading-spin " + theme} spin/>}/>
-                        <p className={"awards-loading-text"}>Gathering awards 🏆 ...</p>
-                    </div>
-                    :
-                    activeAwards.length < 1 ?
-                        <Alert type="error"
-                               message={"No awards used " + (activeNotableFilter == null ? "" : "for active filter ") + "😢"}
-                               description={
-                                   "Try reacting to a comment on an issue or merge request"
-                                   + (activeNotableFilter == null ? "" : " or clearing the filter") + ", then refreshing."
-                               }/>
-                        :
-                        <>
-                            <div className={"awards-list " + theme}>
-                                <Timeline>
-                                    {activeAwards.map(na =>
-                                        <Timeline.Item className="comment-timeline-item" key={na.award.id}>
-                                            <UserName id={na.award.user.id} assets={assets} theme={theme}/> reacted
-                                            with <Text
-                                            keyboard>{assets.emoji[na.award.name] ?? na.award.name}</Text> on
-                                            comment <Text className="comment-snippet"
-                                                          type={"secondary"}>{na.note.body}</Text> by <UserName
-                                            id={na.note.author.id} assets={assets} theme={theme}/>
-                                        </Timeline.Item>
-                                    )}
-                                </Timeline>
-                            </div>
-                            <div className={"chart-container"}>
-                                <Bar
-                                    data={data}
-                                    options={
-                                        {
-                                            maintainAspectRatio: false,
-                                            scales: {
-                                                y: {
-                                                    ticks: {
-                                                        stepSize: 1
+            {loading ?
+                <div className={"awards-loading-container"}>
+                    <Spin indicator={<LoadingOutlined className={"awards-loading-spin " + theme} spin/>}/>
+                    <p className={"awards-loading-text"}>Gathering awards 🏆 ...</p>
+                </div>
+                :
+                <>
+                    <div className={"tab-content"}>
+                        <div className={"tab-parameters-content"}>
+                            <Space direction="vertical" className="noteable-filter-container">
+                                <Text strong={true}>Show reactions to comments on:</Text>
+                                <Radio.Group onChange={updateFilter} size="large" options={radioOptions} defaultValue=""
+                                             optionType="button" buttonStyle="solid"/>
+                            </Space>
+                        </div>
+                        <div className={"tab-data-content"}>
+                            {activeAwards.length < 1 ?
+                                <Alert type="error"
+                                       message={"No awards used " + (activeNotableFilter == null ? "" : "for active filter ") + "😢"}
+                                       description={
+                                           "Try reacting to a comment on an issue or merge request"
+                                           + (activeNotableFilter == null ? "" : " or clearing the filter") + ", then refreshing."
+                                       }/>
+                                :
+                                <>
+                                    <div className={"awards-list " + theme}>
+                                        <Timeline>
+                                            {activeAwards.map(na =>
+                                                <Timeline.Item className="comment-timeline-item" key={na.award.id}>
+                                                    <UserName id={na.award.user.id} assets={assets}
+                                                              theme={theme}/> reacted
+                                                    with <Text
+                                                    keyboard>{assets.emoji[na.award.name] ?? na.award.name}</Text> on
+                                                    comment <Text className="comment-snippet"
+                                                                  type={"secondary"}>{na.note.body}</Text> by <UserName
+                                                    id={na.note.author.id} assets={assets} theme={theme}/>
+                                                </Timeline.Item>
+                                            )}
+                                        </Timeline>
+                                    </div>
+                                    <div className={"chart-container"}>
+                                        <Bar
+                                            data={data}
+                                            options={
+                                                {
+                                                    maintainAspectRatio: false,
+                                                    scales: {
+                                                        y: {
+                                                            ticks: {
+                                                                stepSize: 1
+                                                            },
+                                                        },
+                                                        x: {
+                                                            ticks: {
+                                                                font: {
+                                                                    size: 40
+                                                                }
+                                                            }
+                                                        }
                                                     },
-                                                },
-                                                x: {
-                                                    ticks: {
-                                                        font: {
-                                                            size: 40
+                                                    plugins: {
+                                                        legend: {
+                                                            display: false
+                                                        },
+                                                        title: {
+                                                            display: true,
+                                                            text: 'Top 5 most used comment awards',
+                                                            font: {
+                                                                size: 18
+                                                            },
+                                                            padding: {
+                                                                top: 10,
+                                                                bottom: 20
+                                                            }
                                                         }
                                                     }
                                                 }
-                                            },
-                                            plugins: {
-                                                legend: {
-                                                    display: false
-                                                },
-                                                title: {
-                                                    display: true,
-                                                    text: 'Top 5 most used comment awards',
-                                                    font: {
-                                                        size: 18
-                                                    },
-                                                    padding: {
-                                                        top: 10,
-                                                        bottom: 20
-                                                    }
-                                                }
                                             }
-                                        }
-                                    }
-                                />
-                            </div>
-                        </>
-                }
-            </div>
+                                        />
+                                    </div>
+                                </>
+                            }
+                        </div>
+                    </div>
+                </>
+            }
         </>
     )
 }

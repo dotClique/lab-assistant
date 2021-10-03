@@ -56,75 +56,78 @@ export default function IssuesTab() {
 
     return (
         <div className={"tab-content"}>
-            <div>
-                {issues.map(i =>
-                    <div key={i.iid}>
-                        <Card
-                            title={
-                                <>
-                                    {i.closed_at === null ?
-                                        <ClockCircleTwoTone className={"issue-closed-status-icon"}
-                                                            twoToneColor={theme === "orange" ? "rgb(255, 85, 0)" : "rgb(63, 140, 228)"}/>
-                                        :
-                                        <CheckCircleTwoTone className={"issue-closed-status-icon"}
-                                                            twoToneColor={"rgb(135,208,104)"}/>}
-                                    <span className={"issue-card-title"}>{i.title}</span>
-                                    <br/>
-                                    {i.labels.length > 0 &&
-                                    i.labels.map(l => (
-                                        <Tag key={l}>{l}</Tag>
-                                    ))
-                                    }
-                                </>
-                            }
-                            bordered={true}
-                        >
-                            <p><strong>Time spent:</strong> {Math.round(i.time_stats.total_time_spent / 3600)}h</p>
-                            <p><strong>Author:</strong> {anonymize(assets.names, i.author.id)}</p>
-                            <p><strong>Upvotes:</strong> {i.upvotes}</p>
-                        </Card>
-                        <br/>
-                    </div>
-                )}
-            </div>
-            <div className={"chart-container"}>
-                <Radar
-                    data={{
-                        labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-                        datasets: [
+            <div className={"tab-data-content"}>
+                <div>
+                    {issues.map(i =>
+                        <div key={i.iid}>
+                            <Card
+                                title={
+                                    <>
+                                        {i.closed_at === null ?
+                                            <ClockCircleTwoTone className={"issue-closed-status-icon"}
+                                                                twoToneColor={theme === "orange" ? "rgb(255, 85, 0)" : "rgb(63, 140, 228)"}/>
+                                            :
+                                            <CheckCircleTwoTone className={"issue-closed-status-icon"}
+                                                                twoToneColor={"rgb(135,208,104)"}/>}
+                                        <span className={"issue-card-title"}>{i.title}</span>
+                                        <br/>
+                                        {i.labels.length > 0 &&
+                                        i.labels.map(l => (
+                                            <Tag key={l}>{l}</Tag>
+                                        ))
+                                        }
+                                    </>
+                                }
+                                bordered={true}
+                            >
+                                <p><strong>Time spent:</strong> {Math.round(i.time_stats.total_time_spent / 3600)}h</p>
+                                <p><strong>Author:</strong> {anonymize(assets.names, i.author.id)}</p>
+                                <p><strong>Upvotes:</strong> {i.upvotes}</p>
+                            </Card>
+                            <br/>
+                        </div>
+                    )}
+                </div>
+                <div className={"chart-container"}>
+                    <Radar
+                        data={{
+                            labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                            datasets: [
+                                {
+                                    label: 'created',
+                                    data: weekdayCreatedTally,
+                                    fill: true,
+                                    backgroundColor: theme === "orange" ? 'rgba(255, 85, 0, 0.4)' : 'rgba(63, 140, 228, 0.4)',
+                                    borderColor: theme === "orange" ? 'rgb(255, 85, 0)' : 'rgb(63, 140, 228)'
+                                }, {
+                                    label: 'closed',
+                                    data: weekdayClosedTally,
+                                    fill: true,
+                                    backgroundColor: 'rgba(135,208,104,0.4)',
+                                    borderColor: 'rgb(135,208,104)'
+                                },
+                            ],
+                        }}
+                        options={
                             {
-                                label: 'created',
-                                data: weekdayCreatedTally,
-                                fill: true,
-                                backgroundColor: theme === "orange" ? 'rgba(255, 85, 0, 0.4)' : 'rgba(63, 140, 228, 0.4)',
-                                borderColor: theme === "orange" ? 'rgb(255, 85, 0)' : 'rgb(63, 140, 228)'
-                            }, {
-                                label: 'closed',
-                                data: weekdayClosedTally,
-                                fill: true,
-                                backgroundColor: 'rgba(135,208,104,0.4)',
-                                borderColor: 'rgb(135,208,104)'
-                            },
-                        ],
-                    }}
-                    options={
-                        {
-                            maintainAspectRatio: false,
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: 'Issues per weekday',
-                                    font: {
-                                        size: 18
-                                    },
-                                    padding: {
-                                        top: 10,
-                                        bottom: 20
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: 'Issues per weekday',
+                                        font: {
+                                            size: 18
+                                        },
+                                        padding: {
+                                            top: 10,
+                                            bottom: 20
+                                        }
                                     }
                                 }
                             }
                         }
-                    }/>
+                    />
+                </div>
             </div>
         </div>
     )

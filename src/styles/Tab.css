@@ -1,10 +1,29 @@
 .tab-content {
     display: flex;
+    flex-direction: column;
+}
+
+.tab-parameters-content {
+    margin-bottom: 2em;
+    display: flex;
+    justify-content: center;
+}
+
+.tab-parameters-content.orange .ant-spin-dot-item {
+    background-color: rgb(255, 85, 0);
+}
+
+.tab-parameters-content.blue .ant-spin-dot-item {
+    background-color: rgb(63, 140, 228);
+}
+
+.tab-data-content {
+    display: flex;
     justify-content: space-evenly;
 }
 
 @media screen and (max-width: 1200px) {
-    .tab-content {
+    .tab-data-content {
         flex-direction: column-reverse;
     }
     .chart-container {

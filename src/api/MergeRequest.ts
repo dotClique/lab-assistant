@@ -57,7 +57,7 @@ export interface MergeRequest {
 export async function getMergeRequests(accessToken: string, projectId: string): Promise<MergeRequest[]> {
     try {
         return (
-            await getAllPages<MergeRequest[]>("/merge_requests", axiosConfig(accessToken, projectId, 100))
+            await getAllPages<MergeRequest[]>("/merge_requests", axiosConfig(accessToken, projectId, {per_page: 100}))
         ).map(page => page.data).flat();
     } catch (e) {
         console.error("Failed to retrieve merge requests", e);
