@@ -1,14 +1,13 @@
 import React, {useContext, useEffect, useState} from "react";
 import {AuthContext, AssetsContext, ThemeContext} from "../App";
 import {getIssues, Issue, IssueState} from "../api/Issues";
-import {Card, Radio, RadioChangeEvent, Select, Space, Tag, Typography} from "antd";
+import {Card, Radio, RadioChangeEvent, Select, Space, Tag} from "antd";
 import {anonymize} from "../api/Users";
 import {CheckCircleTwoTone, ClockCircleTwoTone} from '@ant-design/icons';
 import {Radar} from "react-chartjs-2";
 import '../styles/IssuesTab.css'
 import {ChartDataset, ChartTypeRegistry} from "chart.js";
 
-const {Text} = Typography;
 const {Option} = Select;
 
 interface IssuesTabState {
@@ -45,7 +44,9 @@ export default function IssuesTab() {
 
     const weekdayFromISODateString = (isoString: string) => {
         // Strip ISO string to only include date, and adjust week to start on monday
-        return (new Date(Date.parse(isoString.slice(0, 10))).getDay() - 1) % 7
+        // Requires hack to get modulo with negative numbers:
+        // https://web.archive.org/web/20090717035140if_/javascript.about.com/od/problemsolving/a/modulobug.htm
+        return ((new Date(Date.parse(isoString.slice(0, 10))).getDay() - 1) % 7 + 7) % 7
     }
 
     useEffect(() => {
