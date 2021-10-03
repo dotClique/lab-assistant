@@ -1,11 +1,13 @@
 import {axiosConfig, getAllPages} from "./ApiBase";
 
+// Define the types of a date statistics
 export interface DateStat {
     commits: number,
     additions: number,
     deletions: number
 }
 
+// Define the types of the content of a commit
 export interface Commit {
     id: string
     short_id: string
@@ -23,6 +25,7 @@ export interface Commit {
     stats: DateStat
 }
 
+// Get all commits in a GitLab repository
 export async function getCommits(accessToken: string, projectId: string): Promise<Commit[]> {
     return (
         getAllPages<Commit[]>(`/repository/commits`, axiosConfig(accessToken, projectId, {per_page: 100, with_stats: true}))

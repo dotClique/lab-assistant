@@ -8,6 +8,10 @@ import {ThemeContext} from "../../App";
 
 const {TabPane} = Tabs;
 
+/**
+ * Function that renders the tab component used to categorize data into tabs
+ * @returns tab with three tab panes
+ */
 function Tab() {
 
     const {theme} = useContext(ThemeContext)

@@ -1,6 +1,8 @@
 import {axiosConfig, getAllPages} from "./ApiBase";
 import {User} from "./Users";
 
+
+// Define the types of a time statistic
 export interface TimeStats {
     time_estimate: number,
     total_time_spent: number,
@@ -8,8 +10,10 @@ export interface TimeStats {
     // human_total_time_spent: number,
 }
 
+// Define the type of an issue state (always either open or closed)
 export type IssueState = "opened" | "closed";
 
+// Define the types of a label detail
 export interface LabelDetails {
     id: number,
     name: string,
@@ -20,6 +24,7 @@ export interface LabelDetails {
     // remove_on_close: boolean,
 }
 
+// Define the types of the content of an issue
 export interface Issue {
     id: number,
     iid: number,
@@ -58,6 +63,7 @@ export interface Issue {
     // service_desk_reply_to: any,
 }
 
+// Get all issues in a GitLab repository
 export async function getIssues(accessToken: string, projectId: string): Promise<Issue[]> {
     return (
         getAllPages<Issue[]>("/issues", axiosConfig(accessToken, projectId, {per_page: 100, with_labels_details: true}))

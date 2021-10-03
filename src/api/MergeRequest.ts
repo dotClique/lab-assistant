@@ -2,6 +2,7 @@ import {User} from "./Users";
 import {TimeStats} from "./Issues";
 import {axiosConfig, getAllPages} from "./ApiBase";
 
+// Defines the types of the content in a merge request
 export interface MergeRequest {
     id: number,
     iid: number,
@@ -54,6 +55,7 @@ export interface MergeRequest {
     // user,
 }
 
+// Get all merge requests in a GitLab repository
 export async function getMergeRequests(accessToken: string, projectId: string): Promise<MergeRequest[]> {
     try {
         return (

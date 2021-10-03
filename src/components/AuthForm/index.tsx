@@ -6,12 +6,14 @@ import './styles.css';
 
 const {Paragraph, Text} = Typography;
 
+// Define the types of the content of a TokenInputState, aka. form submission content
 interface TokenInputState {
     inputAccessToken: string,
     inputProjectId: string,
     authFailed: boolean
 }
 
+// Class component that renders the authorization form in the application
 export default class AuthForm extends React.Component<{}, TokenInputState> {
 
     constructor(props: {}) {
@@ -25,6 +27,8 @@ export default class AuthForm extends React.Component<{}, TokenInputState> {
         this.onFinishFailed = this.onFinishFailed.bind(this);
     }
 
+    // Submit the input from the authorization form the user is first prompted with in the app
+    // Based on the authorization-method in ApiBase.ts
     async submitInput(auth: AuthContextType, input: {projectId: string, accessToken: string}) {
         const projectId = input.projectId
         const accessToken = input.accessToken
@@ -38,12 +42,12 @@ export default class AuthForm extends React.Component<{}, TokenInputState> {
         }
     }
 
+    // If the form fails on submission, log the error in the console
     onFinishFailed(error: any) {
         console.log('Failed:', error);
     };
 
     render() {
-
         return (
             <AuthContext.Consumer>
                 {auth => (

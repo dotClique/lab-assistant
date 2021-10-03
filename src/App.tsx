@@ -20,7 +20,7 @@ import {
 } from "./webstorage/WebStorage";
 import {isAuthorized} from "./api/ApiBase";
 
-
+// Define the auth context of the application
 export const AuthContext = React.createContext({
     authorized: false,
     setAuthorized: (authorized: boolean) => {
@@ -33,6 +33,7 @@ export const AuthContext = React.createContext({
     }
 })
 
+// Define the types of the auth context
 export interface AuthContextType {
     authorized: boolean,
     setAuthorized: (authorized: boolean) => void,
@@ -42,12 +43,14 @@ export interface AuthContextType {
     setProjectId: (projectId: string) => void
 }
 
+// Define the theme context of the application
 export const ThemeContext = React.createContext<{ theme: string, toggleTheme: () => void }>({
     theme: "orange",
     toggleTheme: () => {
     }
 })
 
+// Define the types of the assets context
 export interface AssetsContextType {
     names: {
         nouns: string[],
@@ -57,12 +60,13 @@ export interface AssetsContextType {
         [name: string]: string,
     }
 }
-
+// Define the assets context of the application
 export const AssetsContext = React.createContext<AssetsContextType>({
     names: {nouns: ["unknown"], adjectives: [""]},
     emoji: {}
 });
 
+// Main function
 function App() {
     const localTheme = getLocalTheme();
 
@@ -92,12 +96,20 @@ function App() {
             emoji: {},
         }
     });
+
+    /**
+    * Toggles the website theme to be opposite of what it last was
+    */
     const toggleTheme = () => {
         const newTheme = theme === "orange" ? "blue" : "orange";
         setState(prev => ({...prev, theme: newTheme}))
         setLocalTheme(newTheme);
     }
 
+    /**
+     * Close info welcome message permanently after first close
+     * @returns boolean
+     */
     const closeInfo = () => {
         if (getLocalInfoViewedStatus() === "true") {
             return false;
