@@ -13,7 +13,7 @@ function Tab() {
     const {theme} = useContext(ThemeContext)
 
     return (
-        <div className="card-container">
+        <div className={"tabs-container"}>
             <Tabs className={theme}>
                 <TabPane tab="Issues" key="1">
                     <IssuesTab/>

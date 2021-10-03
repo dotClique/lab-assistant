@@ -1,5 +1,12 @@
 @import '~antd/dist/antd.css';
 
+:root {
+  --primary-orange: rgb(255, 85, 0);
+  --light-orange: rgb(255, 127, 73);
+  --primary-blue: rgb(63, 140, 228);
+  --light-blue: rgb(73, 158, 255);
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

@@ -10,11 +10,11 @@
 }
 
 .awards-loading-spin.orange {
-    color: rgb(255, 85, 0)
+    color: var(--primary-orange)
 }
 
 .awards-loading-spin.blue {
-    color: rgb(63, 140, 228)
+    color: var(--primary-blue)
 }
 
 .awards-loading-text {

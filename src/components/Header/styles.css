@@ -1,12 +1,12 @@
 .header {
     height: 10em;
-    background-color: rgb(255, 127, 73);
+    background-color: var(--light-orange);
     display: flex;
     flex-direction: row;
 }
 
 .header.blue {
-    background-color: rgb(73, 158, 255);
+    background-color: var(--light-blue);
 }
 
 .header-text-container {
@@ -42,9 +42,9 @@
 }
 
 .theme-switch.orange {
-    background-color: rgb(255, 85, 0);
+    background-color: var(--primary-orange);
 }
 
 .theme-switch.blue {
-    background-color: rgb(63, 140, 228);
+    background-color: var(--primary-blue);
 }

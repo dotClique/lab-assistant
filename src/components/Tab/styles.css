@@ -1,3 +1,5 @@
+
+
 .tab-content {
     display: flex;
     flex-direction: column;
@@ -10,11 +12,11 @@
 }
 
 .tab-parameters-content.orange .ant-spin-dot-item {
-    background-color: rgb(255, 85, 0);
+    background-color: var(--primary-orange);
 }
 
 .tab-parameters-content.blue .ant-spin-dot-item {
-    background-color: rgb(63, 140, 228);
+    background-color: var(--primary-blue);
 }
 
 .tab-data-content {
@@ -41,15 +43,15 @@
     overflow: hidden;
 }
 
-.card-container p {
+.tabs-container p {
     margin: 0;
 }
 
-.card-container {
+.tabs-container {
     margin: 0 1.5em;
 }
 
-.card-container .ant-tabs-content-holder {
+.tabs-container .ant-tabs-content-holder {
     padding: 1em 0.5em;
 }
 
@@ -58,19 +60,19 @@
 }
 
 .ant-tabs.orange .ant-tabs-tab-btn {
-    color: rgb(255, 85, 0);
+    color: var(--primary-orange);
 }
 
 .ant-tabs.orange .ant-tabs-ink-bar {
-    background: rgb(255, 85, 0);
+    background: var(--primary-orange);
 }
 
 .ant-tabs.blue .ant-tabs-tab-btn, .ant-tabs.blue .ant-tabs-ink-bar {
-    color: rgb(63, 140, 228);
+    color: var(--primary-blue);
 }
 
 .ant-tabs.blue .ant-tabs-ink-bar {
-    background: rgb(63, 140, 228);
+    background: var(--primary-blue);
 }
 
 @media screen and (max-width: 1200px) {
@@ -101,11 +103,11 @@
 }
 
 .tab-data-list.orange .ant-timeline-item-head {
-    border-color: rgb(255, 85, 0);
+    border-color: var(--primary-orange);
 }
 
 .tab-data-list.blue .ant-timeline-item-head {
-    border-color: rgb(63, 140, 228);
+    border-color: var(--primary-blue);
 }
 
 .tab-data-list .comment-snippet {
