@@ -120,11 +120,14 @@ export default function IssuesTab() {
         setState(prev => ({...prev, issuesLabelFilter: value}));
     };
 
-    const addLabelToFilter: React.MouseEventHandler<HTMLSpanElement> = e => {
+    const toggleLabelInFilter: React.MouseEventHandler<HTMLSpanElement> = e => {
         const label = e.currentTarget.innerText;
-        if (!issuesLabelFilter.includes(label)) {
-            setState(prev => ({...prev, issuesLabelFilter: [...prev.issuesLabelFilter, label]}))
-        }
+        setState(prev => ({...prev, issuesLabelFilter:
+        prev.issuesLabelFilter.includes(label) ?
+            [...prev.issuesLabelFilter.slice(0, prev.issuesLabelFilter.indexOf(label)),
+                ...prev.issuesLabelFilter.slice(prev.issuesLabelFilter.indexOf(label)+1)]
+            : [...prev.issuesLabelFilter, label]
+        }))
     }
     const issuesDatasets: ChartDataset<keyof ChartTypeRegistry, number[]>[] = [
         {
@@ -175,7 +178,7 @@ export default function IssuesTab() {
                                         <br/>
                                         {i.labels.length > 0 &&
                                         i.labels.map(l => (
-                                            <Tag onClick={addLabelToFilter} key={l}>{l}</Tag>
+                                            <Tag style={{cursor: "pointer", userSelect: "none"}} onClick={toggleLabelInFilter} key={l}>{l}</Tag>
                                         ))
                                         }
                                     </>
