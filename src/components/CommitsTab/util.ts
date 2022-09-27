@@ -82,10 +82,10 @@ export const initialState: CommitsTabType = {
  */
 export function getDatesBetweenDates(startDate: Date, endDate: Date): Date[] {
     let dates: Date[] = []
-    const theDate = new Date(startDate) // copy to not modify the original
-    while (theDate < endDate && theDate.getDate() !== endDate.getDate()) {
-        dates = [...dates, new Date(theDate)] // append new date
-        theDate.setDate(theDate.getDate() + 1) // go to next date
+    const date = new Date(startDate) // copy to not modify the original
+    while (date < endDate) {
+        dates = [...dates, new Date(date)] // append new date
+        date.setDate(date.getDate() + 1) // go to next date (overflow changes month automatically)
     }
     dates = [...dates, endDate]
     return dates
@@ -153,16 +153,19 @@ export function getCommitStats(commits: Commit[]) {
     const maxDate = new Date(Math.max.apply(Math, commitDates))
     const activeDates: string[] = getDatesBetweenDates(minDate, maxDate).map(d => d.toISOString().slice(0, 10))
     // Count commits, additions and deletions per date
-    const dateStats = Array.from(new Array(activeDates.length)).map(() => ({
+    const dateStats = Array.from(new Array(activeDates.length), () => ({
         commits: 0,
         additions: 0,
         deletions: 0
     }));
-    for (const i of commits) {
-        const dateIndex = activeDates.indexOf(i.created_at.slice(0, 10))
+    for (const commit of commits) {
+        const dateIndex = activeDates.indexOf(commit.created_at.slice(0, 10))
+        if (dateIndex < 0) {
+            console.log(dateIndex, commit.created_at, minDate.toISOString().slice(0, 10), maxDate.toISOString().slice(0, 10))
+        }
         dateStats[dateIndex].commits += 1
-        dateStats[dateIndex].additions += i.stats.additions
-        dateStats[dateIndex].deletions -= i.stats.deletions
+        dateStats[dateIndex].additions += commit.stats.additions
+        dateStats[dateIndex].deletions -= commit.stats.deletions
     }
     const minMoment = moment(minDate)
     const maxMoment = moment(maxDate)
