@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+  lab-assistant:
+    build:
+      context: ./
+      target: install
+    image: lab-assistant:latest
+    container_name: lab-assistant_dev
+    ports:
+      - "3000:3000"
+#     networks:
+#       - reverse-proxy
+    volumes:
+      - "./src/:/app/src/:ro"
+      - "./public/:/app/public/:ro"
+      - "./package.json:/app/package.json:ro"
+      - "./tsconfig.json:/app/tsconfig.json:ro"
+      - "./package-lock.json:/app/package-lock.json:ro"
+      - "/app/node_modules"
+
+# networks:
+#   reverse-proxy:
+#     external: true
