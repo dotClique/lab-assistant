@@ -7,6 +7,8 @@ import {AuthContext, AssetsContext, ThemeContext, AssetsContextType} from "../..
 import './styles.css'
 import {anonymize} from "../../api/Users";
 import {Noteable} from "../../api/Notes";
+// Lazy migration path to avoid tree-shaking, see https://react-chartjs-2.js.org/docs/migration-to-v4/#tree-shaking
+import 'chart.js/auto'
 
 const {Text} = Typography;
 

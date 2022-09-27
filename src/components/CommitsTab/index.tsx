@@ -3,10 +3,12 @@ import {AssetsContext, AuthContext, ThemeContext} from "../../App";
 import {getCommits} from "../../api/Commits";
 import {DatePicker, Space, Spin} from "antd";
 import {LoadingOutlined} from '@ant-design/icons';
-import {Line} from "react-chartjs-2";
 import '../CommitList/styles.css';
 import {chartOptions, CommitsTabType, getChartDatasets, getCommitStats, getFilteredCommits, initialState} from "./util";
 import CommitList from "../CommitList";
+import Chart from "react-chartjs-2";
+// Lazy migration path to avoid tree-shaking, see https://react-chartjs-2.js.org/docs/migration-to-v4/#tree-shaking
+import 'chart.js/auto'
 
 const {RangePicker} = DatePicker;
 
@@ -93,7 +95,7 @@ export default function CommitsTab(): React.ReactElement {
                 <CommitList theme={theme} commits={filteredCommits} names={assets.names}/>
                 {/* Line-diagram of commits, with additions */}
                 <div className={"tab-data-chart"}>
-                    <Line data={chartData} options={chartOptions}/>
+                    <Chart type="bar" data={chartData} options={chartOptions}/>
                 </div>
             </div>
 
