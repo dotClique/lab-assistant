@@ -14,8 +14,8 @@ export interface User {
 // Get all possible names a user can have from text files
 export async function getNames() {
     return {
-        nouns: (await Axios.get<string>("/nouns.txt")).data.split("\n"),
-        adjectives: (await Axios.get<string>("/adjectives.txt")).data.split("\n"),
+        nouns: (await Axios.get<string>("nouns.txt")).data.split("\n"),
+        adjectives: (await Axios.get<string>("adjectives.txt")).data.split("\n"),
     }
 }
 
