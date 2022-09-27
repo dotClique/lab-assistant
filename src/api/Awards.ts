@@ -59,5 +59,5 @@ export async function getAllAwards(accessToken: string, projectId: string): Prom
 
 // Get an emoji corresponding to a specific award string
 export async function getEmoji(): Promise<{ [id: string]: string }> {
-    return (await Axios.get<{ [id: string]: string }>("/emoji.json", {responseType: "json"})).data;
+    return (await Axios.get<{ [id: string]: string }>("emoji.json", {responseType: "json"})).data;
 }
