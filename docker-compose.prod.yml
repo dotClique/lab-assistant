@@ -1,0 +1,12 @@
+version: "3.0"
+services:
+  lab-assistant:
+    build: .
+    image: lab-assistant/release:latest
+    container_name: lab-assistant
+    networks:
+      - reverse-proxy
+
+networks:
+  reverse-proxy:
+    external: true
