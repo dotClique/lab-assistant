@@ -6,8 +6,6 @@ import IssuesTab from "../IssuesTab";
 import CommitsTab from "../CommitsTab";
 import {ThemeContext} from "../../App";
 
-const {TabPane} = Tabs;
-
 /**
  * Function that renders the tab component used to categorize data into tabs
  * @returns tab with three tab panes
@@ -18,17 +16,11 @@ function Tab() {
 
     return (
         <div className="card-container">
-            <Tabs className={theme}>
-                <TabPane tab="Issues" key="1">
-                    <IssuesTab/>
-                </TabPane>
-                <TabPane tab="Commits" key="2">
-                    <CommitsTab/>
-                </TabPane>
-                <TabPane tab="Awards" key="3">
-                    <AwardsTab/>
-                </TabPane>
-            </Tabs>
+            <Tabs className={theme} items={[
+                {label: "Issues", key: "1", children: <IssuesTab/>},
+                {label: "Commits", key: "2", children: <CommitsTab/>},
+                {label: "Awards", key: "3", children: <AwardsTab/>},
+            ]}/>
         </div>
     )
 }
