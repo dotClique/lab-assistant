@@ -115,7 +115,7 @@ export function getFilteredCommits(fromMoment: moment.Moment, toMoment: moment.M
  * Get chart datasets from stats
  */
 export function getChartDatasets(dateStats: DateStat[], fromIndex: number, toIndex: number, theme: string)
-    : ChartDataset<keyof ChartTypeRegistry, number[]>[] {
+    : ChartDataset<"line" | "bar", number[]>[] {
     return [
         {
             type: 'line',

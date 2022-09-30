@@ -1,12 +1,14 @@
 import React, {useContext, useEffect, useState} from "react";
-import {AuthContext, AssetsContext, ThemeContext} from "../../App";
+import {AssetsContext, AuthContext, ThemeContext} from "../../App";
 import {getIssues, Issue, IssueState} from "../../api/Issues";
 import {Radio, RadioChangeEvent, Select, Space} from "antd";
 import {Radar} from "react-chartjs-2";
 import './styles.css'
-import {ChartDataset, ChartTypeRegistry} from "chart.js";
+import {ChartDataset} from "chart.js";
 import {getRadarOptions, weekdays} from "./utlis";
 import IssueList from "../IssueList";
+// Lazy migration path to avoid tree-shaking, see https://react-chartjs-2.js.org/docs/migration-to-v4/#tree-shaking
+import 'chart.js/auto'
 
 const {Option} = Select;
 
@@ -138,7 +140,7 @@ export default function IssuesTab() {
     }
 
     // Define the issues datasets
-    const issuesDatasets: ChartDataset<keyof ChartTypeRegistry, number[]>[] = [
+    const issuesDatasets: ChartDataset<"radar", number[]>[] = [
         {
             label: 'created',
             data: weekdayCreatedTally,
