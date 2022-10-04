@@ -25,3 +25,8 @@ yarn-error.log*
 # IDEs
 .idea/
 .vscode
+
+# Docker
+.env
+docker-compose.override.yml
+docker-compose.prod.override.yml

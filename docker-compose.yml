@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  lab-assistant:
+    build:
+      context: ./
+      target: install
+    image: lab-assistant:latest
+    container_name: lab-assistant_dev
+    ports:
+      - "3000:3000"
+    environment:
+      - CHOKIDAR_USEPOLLING
+    volumes:
+      - "./src/:/app/src/"
+      - "./public/:/app/public/"
+      - "./package.json:/app/package.json"
+      - "./tsconfig.json:/app/tsconfig.json"
+      - "./package-lock.json:/app/package-lock.json"
+      - "/app/node_modules"

@@ -1,5 +1,48 @@
-# IT2810 Project 2
+# Lab Assistant
 A page that displays various data from a GitLab repository, both parametrized and visualized.
+
+# Development
+Develop using Docker:
+```sh
+docker-compose up -d
+```
+Run commands in the container:
+```sh
+docker-compose exec lab-assistant <COMMAND>
+```
+If hot reload is not working on Windows, create a file `.env` with
+```dotenv
+CHOKIDAR_USEPOLLING=true
+```
+If the container log is showing `ENOSPC: System limit for number of file watchers reached` on a
+Unix-like system, the limit must be increased using
+```sh
+docker run --rm --privileged alpine echo fs.inotify.max_user_watches=1048576 | tee -a /etc/sysctl.conf && sysctl -p
+```
+for Mac, or
+```sh
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+```
+otherwise. (`sysctl -p` might need to be `sysctl --system` instead, depending on the OS.)
+
+# Deployment
+```sh
+docker-compose -f docker-compose.prod.yml up -d
+```
+Or, if the environment variable `COMPOSE_FILE=docker-compose.prod.yml` is set, the usual command will do.
+If needed, override setup with a new file `docker-compose.prod.override.yml`, and add an additional `-f 
+docker-compose.prod.override.yml` after the previous. Or, for ease of use, add a file `.env`:
+
+```dotenv
+COMPOSE_FILE=docker-compose.prod.yml:docker-compose.prod.override.yml
+```
+(Unix-like)
+```dotenv
+COMPOSE_FILE=docker-compose.prod.yml;docker-compose.prod.override.yml
+```
+(Windows)
+
+Now, specifying `-f` isn't needed. This method also works without overrides.
 
 # Documentation
 ## Api
